@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ver.cy/schemas/collective/0.1.0/collective-instance.schema.json",
+  "title": "Collective Meta-Model Instance",
+  "type": "object",
+  "required": ["schemaVersion", "context", "parties", "collectives"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "0.1.0" },
+    "context": { "$ref": "#/$defs/context" },
+    "parties": { "type": "array", "items": { "$ref": "#/$defs/party" } },
+    "collectives": { "type": "array", "items": { "$ref": "#/$defs/collective" } },
+    "dimensions": { "type": "array", "items": { "$ref": "#/$defs/dimension" } },
+    "scopes": { "type": "array", "items": { "$ref": "#/$defs/scope" } },
+    "memberships": { "type": "array", "items": { "$ref": "#/$defs/membership" } },
+    "roleDefinitions": { "type": "array", "items": { "$ref": "#/$defs/roleDefinition" } },
+    "positions": { "type": "array", "items": { "$ref": "#/$defs/position" } },
+    "assignments": { "type": "array", "items": { "$ref": "#/$defs/assignment" } },
+    "authorityGrants": { "type": "array", "items": { "$ref": "#/$defs/authorityGrant" } },
+    "accountabilities": { "type": "array", "items": { "$ref": "#/$defs/accountability" } },
+    "allocations": { "type": "array", "items": { "$ref": "#/$defs/allocation" } },
+    "relationships": { "type": "array", "items": { "$ref": "#/$defs/relationship" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "minLength": 1 },
+    "typedReference": {
+      "type": "object", "required": ["targetId", "targetType"], "additionalProperties": false,
+      "properties": { "targetId": { "$ref": "#/$defs/id" }, "targetType": { "type": "string", "minLength": 1 }, "targetCsn": { "type": "string" } }
+    },
+    "instant": { "type": "string", "format": "date-time" },
+    "provenance": {
+      "type": "object", "required": ["owner", "source"], "additionalProperties": false,
+      "properties": { "owner": { "$ref": "#/$defs/id" }, "source": { "type": "string", "minLength": 1 }, "assertedAt": { "$ref": "#/$defs/instant" } }
+    },
+    "context": {
+      "type": "object", "required": ["id", "universe", "purpose"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "universe": { "$ref": "#/$defs/id" }, "organization": { "$ref": "#/$defs/id" }, "scenario": { "type": "string" }, "purpose": { "type": "string", "minLength": 1 } }
+    },
+    "party": {
+      "type": "object", "required": ["id", "partyType", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "partyType": { "enum": ["person", "organization", "agent", "other"] }, "displayName": { "type": "string" }, "externalCsn": { "type": "string" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "collective": {
+      "type": "object", "required": ["id", "kind", "purpose", "lifecycleState", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" }, "displayName": { "type": "string" },
+        "kind": { "enum": ["organizationalUnit", "projectTeam", "productTeam", "communityOfPractice", "governanceBody", "externalPartnerGroup", "temporaryTaskForce"] },
+        "purpose": { "type": "string", "minLength": 1 }, "lifecycleState": { "enum": ["Draft", "Active", "Suspended", "Deprecated", "Retired", "Terminated"] },
+        "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "dimension": {
+      "type": "object", "required": ["id", "kind", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "enum": ["function", "geography", "product", "program", "customer", "legal", "community", "other"] }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "scope": {
+      "type": "object", "required": ["id", "scopeKind", "subjects", "contextRef", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "scopeKind": { "type": "string" }, "subjects": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/typedReference" } }, "contextRef": { "$ref": "#/$defs/id" }, "inclusionExpression": { "type": "string" }, "exclusionExpression": { "type": "string" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "temporalAssociation": {
+      "type": "object", "required": ["id", "validFrom", "provenance"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "membership": {
+      "allOf": [
+        { "$ref": "#/$defs/temporalAssociation" },
+        { "type": "object", "required": ["partyRef", "collectiveRef", "membershipKind", "status"], "properties": { "partyRef": { "$ref": "#/$defs/id" }, "collectiveRef": { "$ref": "#/$defs/id" }, "membershipKind": { "type": "string" }, "status": { "enum": ["proposed", "active", "suspended", "ended"] } } }
+      ]
+    },
+    "roleDefinition": {
+      "type": "object", "required": ["id", "displayName", "expectedContribution", "provenance"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "displayName": { "type": "string" }, "expectedContribution": { "type": "string" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "position": {
+      "type": "object", "required": ["id", "collectiveRef", "roleDefinitionRef", "provenance"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "collectiveRef": { "$ref": "#/$defs/id" }, "roleDefinitionRef": { "$ref": "#/$defs/id" }, "incumbentLimit": { "type": "integer", "minimum": 1 }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "assignment": {
+      "allOf": [
+        { "$ref": "#/$defs/temporalAssociation" },
+        { "type": "object", "required": ["partyRef", "roleDefinitionRef"], "properties": { "partyRef": { "$ref": "#/$defs/id" }, "roleDefinitionRef": { "$ref": "#/$defs/id" }, "positionRef": { "$ref": "#/$defs/id" }, "membershipRef": { "$ref": "#/$defs/id" } } }
+      ]
+    },
+    "authorityGrant": {
+      "allOf": [
+        { "$ref": "#/$defs/temporalAssociation" },
+        { "type": "object", "required": ["grantorRef", "granteeRef", "decisionDomain", "rightKind", "scopeRef"], "properties": { "grantorRef": { "$ref": "#/$defs/id" }, "granteeRef": { "$ref": "#/$defs/id" }, "decisionDomain": { "type": "string" }, "rightKind": { "enum": ["propose", "decide", "approve", "veto", "delegate", "allocate"] }, "scopeRef": { "$ref": "#/$defs/id" }, "mandateRef": { "$ref": "#/$defs/id" }, "parentGrantRef": { "$ref": "#/$defs/id" } } }
+      ]
+    },
+    "accountability": {
+      "allOf": [
+        { "$ref": "#/$defs/temporalAssociation" },
+        { "type": "object", "required": ["accountableRef", "targetRef", "scopeRef", "acceptanceState"], "properties": { "accountableRef": { "$ref": "#/$defs/id" }, "targetRef": { "$ref": "#/$defs/typedReference" }, "scopeRef": { "$ref": "#/$defs/id" }, "acceptanceState": { "enum": ["proposed", "accepted", "declined", "ended"] } } }
+      ]
+    },
+    "allocation": {
+      "allOf": [
+        { "$ref": "#/$defs/temporalAssociation" },
+        { "type": "object", "required": ["resourceRef", "recipientRef", "quantity", "unit", "purpose"], "properties": { "resourceRef": { "$ref": "#/$defs/id" }, "recipientRef": { "$ref": "#/$defs/typedReference" }, "quantity": { "type": "number", "minimum": 0 }, "unit": { "type": "string" }, "purpose": { "type": "string" } } }
+      ]
+    },
+    "relationship": {
+      "type": "object", "required": ["id", "kind", "source", "target", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "enum": ["composedOf", "coordinatesWith", "participatesInDimension", "succeeds", "reportsTo", "dependsOn", "constrainedBy", "supportsAccountability"] }, "source": { "$ref": "#/$defs/id" }, "target": { "$ref": "#/$defs/id" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    }
+  }
+}

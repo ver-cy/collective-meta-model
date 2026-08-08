@@ -1,0 +1,9 @@
+id: identity
+csn: collective.foundation.identity
+responsibility: Integration identities, contexts, and lifecycle.
+depends_on: []
+concepts: [Party, Context, TypedReference, Scope, Collective, StructureDimension]
+content:
+  - path: ../../../../docs/Collective-Meta-Model.md
+    kind: doc/normative
+    meaning: Sections 4 and 5 define foundational identity and structure.

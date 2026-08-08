@@ -1,0 +1,6 @@
+id: performance
+csn: collective.performance
+responsibility: Objectives, metric definitions, and observed measurements.
+depends_on: [collective.resources]
+layers:
+  - path: layers/outcome/layer.yaml

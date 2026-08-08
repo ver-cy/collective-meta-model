@@ -1,0 +1,6 @@
+id: membership
+csn: collective.participation.membership
+responsibility: Membership between a Party and Collective.
+depends_on: [collective.foundation.structure]
+concepts: [Membership]
+content: []

@@ -1,0 +1,36 @@
+register_version: 1.0
+model: urn:vercy:metamodel:collective
+datasets:
+  - id: collective-semantic-model
+    scope:
+      - collective.muif.json
+      - bundles/**
+      - docs/**
+      - schemas/**
+    master:
+      type: repository
+      uri: https://github.com/ver-cy/collective-meta-model
+      ref: main
+    authority: ver-cy
+    status: active
+    conflict_rule: repository-wins
+  - id: vercy-standard
+    scope:
+      - MUC
+      - MMAS
+      - MUIF
+    master:
+      type: external-repository
+      uri: https://github.com/ver-cy/meta-universe
+      ref: main
+    status: referenced
+    conflict_rule: external-master-wins
+  - id: world-model-catalogue
+    scope:
+      - mappings/world-models.yaml
+    master:
+      type: external-repository
+      uri: https://github.com/ver-cy/world-models
+      ref: main
+    status: referenced
+    conflict_rule: crosswalk-documents-differences

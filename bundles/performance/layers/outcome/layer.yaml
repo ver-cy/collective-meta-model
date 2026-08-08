@@ -1,0 +1,6 @@
+id: outcome
+csn: collective.performance.outcome
+responsibility: Desired and observed outcomes with explicit provenance.
+depends_on: [collective.resources.finance]
+concepts: [Objective, Metric, Measurement]
+content: []

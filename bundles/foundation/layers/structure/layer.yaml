@@ -1,0 +1,9 @@
+id: structure
+csn: collective.foundation.structure
+responsibility: Composition, coordination, dimension, and succession relationships.
+depends_on: [collective.foundation.identity]
+concepts: [composedOf, coordinatesWith, participatesInDimension, succeeds]
+content:
+  - path: ../../../../collective.muif.json
+    kind: manifest/muif
+    meaning: Machine-readable structural primitives.

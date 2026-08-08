@@ -1,0 +1,6 @@
+id: policy
+csn: collective.governance.policy
+responsibility: Governed policies and machine-evaluable constraints.
+depends_on: [collective.governance.authority]
+concepts: [Policy, Constraint]
+content: []

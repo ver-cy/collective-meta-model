@@ -1,0 +1,87 @@
+model:
+  id: urn:vercy:metamodel:collective
+  csn: collective.metaModel
+  name: Collective Meta-Model
+  version: 0.1.0
+  status: working-draft
+  owner: ver-cy
+  license: Apache-2.0
+  canonical_language: en
+  namespace: collective
+  compatibility: first-public-version
+  muif: collective.muif.json
+
+standards:
+  muc: "2.0 Working Draft"
+  mmas: "2.0 Working Draft"
+  muif: "1.0"
+
+conformance:
+  muc: self-declared-conformant
+  mmas: A3
+  validation: V2
+  mufp: not-claimed
+
+bundles:
+  - id: foundation
+    path: bundles/foundation/bundle.yaml
+  - id: participation
+    path: bundles/participation/bundle.yaml
+  - id: governance
+    path: bundles/governance/bundle.yaml
+  - id: work
+    path: bundles/work/bundle.yaml
+  - id: resources
+    path: bundles/resources/bundle.yaml
+  - id: performance
+    path: bundles/performance/bundle.yaml
+  - id: history
+    path: bundles/history/bundle.yaml
+  - id: federation
+    path: bundles/federation/bundle.yaml
+
+kind_rules:
+  - pattern: "AGENTS.md"
+    kind: bootstrap
+    origin: authored
+  - pattern: "CONTRIBUTING.md"
+    kind: doc/contributing
+    origin: authored
+  - pattern: "bundles/**/bundle.yaml"
+    kind: manifest/bundle
+    origin: authored
+  - pattern: "bundles/**/layers/*/layer.yaml"
+    kind: manifest/layer
+    origin: authored
+  - pattern: "docs/*.md"
+    kind: doc
+    origin: authored
+  - pattern: "schemas/*.json"
+    kind: schema
+    origin: authored
+  - pattern: "examples/*.json"
+    kind: example
+    origin: authored
+  - pattern: "mappings/*.yaml"
+    kind: mapping
+    origin: authored
+  - pattern: "tools/*.mjs"
+    kind: tool
+    origin: authored
+  - pattern: "collective.muif.json"
+    kind: manifest/muif
+    origin: authored
+  - pattern: "validation-report.json"
+    kind: artifact/validation
+    origin: generated
+
+exclude:
+  - .git/**
+  - .github/**
+  - .gitignore
+  - LICENSE
+  - README.md
+  - CHANGELOG.md
+  - BOOTSTRAP.md
+  - manifest.yaml
+  - sources.yaml

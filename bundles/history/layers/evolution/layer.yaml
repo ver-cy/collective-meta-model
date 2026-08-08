@@ -1,0 +1,6 @@
+id: evolution
+csn: collective.history.evolution
+responsibility: Event vocabulary and traceable evolution.
+depends_on: [collective.performance.outcome]
+concepts: [Event, Lineage, Conflict]
+content: []

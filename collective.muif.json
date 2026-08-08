@@ -1,0 +1,363 @@
+{
+  "muif": { "version": "1.0" },
+  "metaModel": {
+    "id": "urn:vercy:metamodel:collective",
+    "csn": "collective.metaModel",
+    "version": "0.1.0",
+    "fingerprint": "sha256:d45a17b99e0a50fd10562d49b780274ca023d40ccf40fa718f84382febf33a8d",
+    "displayName": "Collective Meta-Model",
+    "description": "Organizational units and cross-functional teams in a context-aware matrix."
+  },
+  "namespaces": ["collective"],
+  "bundles": [
+    { "csn": "collective.foundation", "layers": ["collective.foundation.identity", "collective.foundation.structure"] },
+    { "csn": "collective.participation", "layers": ["collective.participation.membership", "collective.participation.role"] },
+    { "csn": "collective.governance", "layers": ["collective.governance.authority", "collective.governance.policy"] },
+    { "csn": "collective.work", "layers": ["collective.work.coordination"] },
+    { "csn": "collective.resources", "layers": ["collective.resources.capacity", "collective.resources.finance"] },
+    { "csn": "collective.performance", "layers": ["collective.performance.outcome"] },
+    { "csn": "collective.history", "layers": ["collective.history.evolution"] },
+    { "csn": "collective.federation", "layers": ["collective.federation.disclosure"] }
+  ],
+  "objects": [
+    {
+      "muifType": "Object", "id": "collective:Party", "csn": "collective.party", "kind": "Agent", "namespace": "collective",
+      "displayName": "Party", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.partyId", "valueType": "string", "required": true },
+        { "name": "collective.partyType", "valueType": "string", "required": true },
+        { "name": "collective.externalCsn", "valueType": "string", "required": false },
+        { "name": "collective.owner", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Context", "csn": "collective.context", "kind": "Value", "namespace": "collective",
+      "displayName": "Context", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.contextId", "valueType": "string", "required": true },
+        { "name": "collective.universe", "valueType": "string", "required": true },
+        { "name": "collective.scenario", "valueType": "string", "required": false },
+        { "name": "collective.purpose", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:TypedReference", "csn": "collective.typedReference", "kind": "Value", "namespace": "collective",
+      "displayName": "Typed Reference", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.targetId", "valueType": "string", "required": true },
+        { "name": "collective.targetType", "valueType": "string", "required": true },
+        { "name": "collective.targetCsn", "valueType": "string", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Scope", "csn": "collective.scope", "kind": "Value", "namespace": "collective",
+      "displayName": "Scope", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.scopeId", "valueType": "string", "required": true },
+        { "name": "collective.scopeKind", "valueType": "string", "required": true },
+        { "name": "collective.subjects", "valueType": "collective.typedReference", "required": true, "multiplicity": "1..*" },
+        { "name": "collective.contextRef", "valueType": "collective.context", "required": true },
+        { "name": "collective.inclusionExpression", "valueType": "string", "required": false },
+        { "name": "collective.exclusionExpression", "valueType": "string", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Collective", "csn": "collective.collective", "kind": "Entity", "namespace": "collective",
+      "displayName": "Collective", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.collectiveId", "valueType": "string", "required": true },
+        { "name": "collective.kind", "valueType": "string", "required": true },
+        { "name": "collective.purpose", "valueType": "string", "required": true },
+        { "name": "collective.lifecycleState", "valueType": "string", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false },
+        { "name": "collective.contextRef", "valueType": "collective.context", "required": true },
+        { "name": "collective.owner", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:StructureDimension", "csn": "collective.structureDimension", "kind": "Entity", "namespace": "collective",
+      "displayName": "Structure Dimension", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.dimensionId", "valueType": "string", "required": true },
+        { "name": "collective.dimensionKind", "valueType": "string", "required": true },
+        { "name": "collective.contextRef", "valueType": "collective.context", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Membership", "csn": "collective.membership", "kind": "Entity", "namespace": "collective",
+      "displayName": "Membership", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.membershipId", "valueType": "string", "required": true },
+        { "name": "collective.partyRef", "valueType": "collective.party", "required": true },
+        { "name": "collective.collectiveRef", "valueType": "collective.collective", "required": true },
+        { "name": "collective.membershipKind", "valueType": "string", "required": true },
+        { "name": "collective.status", "valueType": "string", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false },
+        { "name": "collective.contextRef", "valueType": "collective.context", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:RoleDefinition", "csn": "collective.roleDefinition", "kind": "Entity", "namespace": "collective",
+      "displayName": "Role Definition", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.roleDefinitionId", "valueType": "string", "required": true },
+        { "name": "collective.expectedContribution", "valueType": "string", "required": true },
+        { "name": "collective.scopeRef", "valueType": "collective.scope", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Position", "csn": "collective.position", "kind": "Entity", "namespace": "collective",
+      "displayName": "Position", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.positionId", "valueType": "string", "required": true },
+        { "name": "collective.collectiveRef", "valueType": "collective.collective", "required": true },
+        { "name": "collective.roleDefinitionRef", "valueType": "collective.roleDefinition", "required": true },
+        { "name": "collective.incumbentLimit", "valueType": "integer", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Assignment", "csn": "collective.assignment", "kind": "Entity", "namespace": "collective",
+      "displayName": "Assignment", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.assignmentId", "valueType": "string", "required": true },
+        { "name": "collective.partyRef", "valueType": "collective.party", "required": true },
+        { "name": "collective.roleDefinitionRef", "valueType": "collective.roleDefinition", "required": true },
+        { "name": "collective.positionRef", "valueType": "collective.position", "required": false },
+        { "name": "collective.membershipRef", "valueType": "collective.membership", "required": false },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Mandate", "csn": "collective.mandate", "kind": "Entity", "namespace": "collective",
+      "displayName": "Mandate", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.mandateId", "valueType": "string", "required": true },
+        { "name": "collective.issuerRef", "valueType": "collective.party", "required": true },
+        { "name": "collective.recipientRef", "valueType": "collective.party", "required": true },
+        { "name": "collective.scopeRef", "valueType": "collective.scope", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:DecisionDomain", "csn": "collective.decisionDomain", "kind": "Entity", "namespace": "collective",
+      "displayName": "Decision Domain", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.decisionDomainId", "valueType": "string", "required": true },
+        { "name": "collective.scopeRef", "valueType": "collective.scope", "required": true },
+        { "name": "collective.contextRef", "valueType": "collective.context", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:AuthorityGrant", "csn": "collective.authorityGrant", "kind": "Entity", "namespace": "collective",
+      "displayName": "Authority Grant", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.authorityGrantId", "valueType": "string", "required": true },
+        { "name": "collective.grantorRef", "valueType": "collective.party", "required": true },
+        { "name": "collective.granteeRef", "valueType": "collective.party", "required": true },
+        { "name": "collective.decisionDomainRef", "valueType": "collective.decisionDomain", "required": true },
+        { "name": "collective.rightKind", "valueType": "string", "required": true },
+        { "name": "collective.scopeRef", "valueType": "collective.scope", "required": true },
+        { "name": "collective.mandateRef", "valueType": "collective.mandate", "required": false },
+        { "name": "collective.parentGrantRef", "valueType": "collective.authorityGrant", "required": false },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Accountability", "csn": "collective.accountability", "kind": "Entity", "namespace": "collective",
+      "displayName": "Accountability", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.accountabilityId", "valueType": "string", "required": true },
+        { "name": "collective.accountableRef", "valueType": "collective.party", "required": true },
+        { "name": "collective.targetRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.scopeRef", "valueType": "collective.scope", "required": true },
+        { "name": "collective.acceptanceState", "valueType": "string", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Policy", "csn": "collective.policy", "kind": "Entity", "namespace": "collective",
+      "displayName": "Policy", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.policyId", "valueType": "string", "required": true },
+        { "name": "collective.scopeRef", "valueType": "collective.scope", "required": true },
+        { "name": "collective.precedence", "valueType": "integer", "required": false },
+        { "name": "collective.enforcementMode", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Constraint", "csn": "collective.constraint", "kind": "Abstract", "namespace": "collective",
+      "displayName": "Constraint", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.constraintId", "valueType": "string", "required": true },
+        { "name": "collective.expressionLanguage", "valueType": "string", "required": true },
+        { "name": "collective.expression", "valueType": "string", "required": true },
+        { "name": "collective.policyRef", "valueType": "collective.policy", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:WorkSubject", "csn": "collective.workSubject", "kind": "Entity", "namespace": "collective",
+      "displayName": "Work Subject", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.workSubjectId", "valueType": "string", "required": true },
+        { "name": "collective.externalCsn", "valueType": "string", "required": false },
+        { "name": "collective.owner", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:WorkItem", "csn": "collective.workItem", "kind": "Entity", "namespace": "collective",
+      "displayName": "Work Item", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.workItemId", "valueType": "string", "required": true },
+        { "name": "collective.workSubjectRef", "valueType": "collective.workSubject", "required": false },
+        { "name": "collective.purpose", "valueType": "string", "required": true },
+        { "name": "collective.status", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Commitment", "csn": "collective.commitment", "kind": "Entity", "namespace": "collective",
+      "displayName": "Commitment", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.commitmentId", "valueType": "string", "required": true },
+        { "name": "collective.promisorRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.beneficiaryRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.outcome", "valueType": "string", "required": true },
+        { "name": "collective.acceptanceCriteria", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Resource", "csn": "collective.resource", "kind": "Resource", "namespace": "collective",
+      "displayName": "Resource", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.resourceId", "valueType": "string", "required": true },
+        { "name": "collective.resourceKind", "valueType": "string", "required": true },
+        { "name": "collective.owner", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Capacity", "csn": "collective.capacity", "kind": "Value", "namespace": "collective",
+      "displayName": "Capacity", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.resourceRef", "valueType": "collective.resource", "required": true },
+        { "name": "collective.quantity", "valueType": "decimal", "required": true },
+        { "name": "collective.unit", "valueType": "string", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Allocation", "csn": "collective.allocation", "kind": "Entity", "namespace": "collective",
+      "displayName": "Allocation", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.allocationId", "valueType": "string", "required": true },
+        { "name": "collective.resourceRef", "valueType": "collective.resource", "required": true },
+        { "name": "collective.recipientRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.quantity", "valueType": "decimal", "required": true },
+        { "name": "collective.unit", "valueType": "string", "required": true },
+        { "name": "collective.purpose", "valueType": "string", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Budget", "csn": "collective.budget", "kind": "Entity", "namespace": "collective",
+      "displayName": "Budget", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.budgetId", "valueType": "string", "required": true },
+        { "name": "collective.amount", "valueType": "decimal", "required": true },
+        { "name": "collective.currency", "valueType": "string", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:CostObject", "csn": "collective.costObject", "kind": "Entity", "namespace": "collective",
+      "displayName": "Cost Object", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.costObjectId", "valueType": "string", "required": true },
+        { "name": "collective.externalCsn", "valueType": "string", "required": false },
+        { "name": "collective.owner", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:FundingAllocation", "csn": "collective.fundingAllocation", "kind": "Entity", "namespace": "collective",
+      "displayName": "Funding Allocation", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.fundingAllocationId", "valueType": "string", "required": true },
+        { "name": "collective.budgetRef", "valueType": "collective.budget", "required": true },
+        { "name": "collective.recipientRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.amount", "valueType": "decimal", "required": true },
+        { "name": "collective.currency", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Objective", "csn": "collective.objective", "kind": "Entity", "namespace": "collective",
+      "displayName": "Objective", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.objectiveId", "valueType": "string", "required": true },
+        { "name": "collective.desiredOutcome", "valueType": "string", "required": true },
+        { "name": "collective.owner", "valueType": "string", "required": true },
+        { "name": "collective.status", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Metric", "csn": "collective.metric", "kind": "Entity", "namespace": "collective",
+      "displayName": "Metric", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.metricId", "valueType": "string", "required": true },
+        { "name": "collective.method", "valueType": "string", "required": true },
+        { "name": "collective.unit", "valueType": "string", "required": true },
+        { "name": "collective.direction", "valueType": "string", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Measurement", "csn": "collective.measurement", "kind": "Value", "namespace": "collective",
+      "displayName": "Measurement", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.measurementId", "valueType": "string", "required": true },
+        { "name": "collective.metricRef", "valueType": "collective.metric", "required": true },
+        { "name": "collective.targetRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.value", "valueType": "decimal", "required": true },
+        { "name": "collective.observedAt", "valueType": "dateTime", "required": true }
+      ]
+    }
+  ],
+  "relationships": [
+    { "muifType": "Relationship", "id": "collective:relationship:composedOf", "csn": "collective.composedOf", "kind": "collective.composedOf", "source": "collective:Collective", "target": "collective:Collective", "cardinality": "0..*", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Relationship", "id": "collective:relationship:coordinatesWith", "csn": "collective.coordinatesWith", "kind": "collective.coordinatesWith", "source": "collective:Collective", "target": "collective:Collective", "cardinality": "0..*", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Relationship", "id": "collective:relationship:participatesInDimension", "csn": "collective.participatesInDimension", "kind": "collective.participatesInDimension", "source": "collective:Collective", "target": "collective:StructureDimension", "cardinality": "0..*", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Relationship", "id": "collective:relationship:succeeds", "csn": "collective.succeeds", "kind": "collective.succeeds", "source": "collective:Collective", "target": "collective:Collective", "cardinality": "0..*", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Relationship", "id": "collective:relationship:reportsTo", "csn": "collective.reportsTo", "kind": "collective.reportsTo", "source": "collective:Party", "target": "collective:Party", "cardinality": "0..*", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Relationship", "id": "collective:relationship:dependsOn", "csn": "collective.dependsOn", "kind": "collective.dependsOn", "source": "collective:WorkItem", "target": "collective:WorkItem", "cardinality": "0..*", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Relationship", "id": "collective:relationship:constrainedBy", "csn": "collective.constrainedBy", "kind": "collective.constrainedBy", "source": "collective:Collective", "target": "collective:Constraint", "cardinality": "0..*", "provenance": { "owner": "urn:vercy:collective:maintainers" } }
+    ,{ "muifType": "Relationship", "id": "collective:relationship:supportsAccountability", "csn": "collective.supportsAccountability", "kind": "collective.supportsAccountability", "source": "collective:AuthorityGrant", "target": "collective:Accountability", "cardinality": "0..*", "provenance": { "owner": "urn:vercy:collective:maintainers" } }
+  ],
+  "events": [
+    { "muifType": "Event", "id": "collective:event:collectiveCreated", "type": "Lifecycle", "subject": "collective:Collective", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.collectiveCreated" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:membershipStarted", "type": "Lifecycle", "subject": "collective:Membership", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.membershipStarted" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:assignmentStarted", "type": "Lifecycle", "subject": "collective:Assignment", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.assignmentStarted" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:mandateIssued", "type": "Semantic", "subject": "collective:Mandate", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.mandateIssued" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:authorityGranted", "type": "Semantic", "subject": "collective:AuthorityGrant", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.authorityGranted" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:accountabilityAccepted", "type": "Semantic", "subject": "collective:Accountability", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.accountabilityAccepted" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:allocationCommitted", "type": "Semantic", "subject": "collective:Allocation", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.allocationCommitted" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:conflictDetected", "type": "Conflict", "subject": "collective:Collective", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.conflictDetected" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } }
+  ],
+  "contracts": [
+    { "muifType": "Contract", "id": "collective:contract:rosterDisclosure", "kind": "KnowledgeDisclosure", "purpose": "Disclose the minimum team roster required for an authorized operational purpose", "parties": ["urn:vercy:collective:publisher", "urn:vercy:collective:consumer"], "permissions": ["read:collective.membership", "read:collective.assignment"], "restrictions": ["purpose-bound", "data-minimization", "no-onward-disclosure"], "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Contract", "id": "collective:contract:authorityRegisterDisclosure", "kind": "KnowledgeDisclosure", "purpose": "Disclose active decision authority needed to validate a decision", "parties": ["urn:vercy:collective:publisher", "urn:vercy:collective:consumer"], "permissions": ["read:collective.authorityGrant"], "restrictions": ["purpose-bound", "active-grants-only"], "provenance": { "owner": "urn:vercy:collective:maintainers" } }
+  ],
+  "projections": [
+    { "muifType": "Projection", "id": "collective:projection:organizationChart", "subject": "collective:Collective", "context": "OrganizationChart", "purpose": "Present composition and named positions without inferring authority", "profile": "collective.organizationChartProjection", "fields": ["collective.collectiveId", "collective.kind", "collective.lifecycleState"], "contract": "collective:contract:rosterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Projection", "id": "collective:projection:teamRoster", "subject": "collective:Membership", "context": "TeamOperations", "purpose": "Provide a minimal active roster for team coordination", "profile": "collective.teamRosterProjection", "fields": ["collective.partyRef", "collective.collectiveRef", "collective.membershipKind", "collective.status"], "contract": "collective:contract:rosterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Projection", "id": "collective:projection:authorityRegister", "subject": "collective:AuthorityGrant", "context": "DecisionValidation", "purpose": "Verify whether a party has an active decision right", "profile": "collective.authorityRegisterProjection", "fields": ["collective.grantorRef", "collective.granteeRef", "collective.decisionDomainRef", "collective.rightKind", "collective.validFrom", "collective.validTo"], "contract": "collective:contract:authorityRegisterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Projection", "id": "collective:projection:accountabilityMap", "subject": "collective:Accountability", "context": "Governance", "purpose": "Show accepted accountability for selected outcomes", "profile": "collective.accountabilityMapProjection", "fields": ["collective.accountableRef", "collective.targetRef", "collective.scopeRef", "collective.acceptanceState"], "contract": "collective:contract:authorityRegisterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Projection", "id": "collective:projection:capacityPlan", "subject": "collective:Allocation", "context": "CapacityPlanning", "purpose": "Expose aggregated resource allocation for planning", "profile": "collective.capacityPlanProjection", "fields": ["collective.resourceRef", "collective.recipientRef", "collective.quantity", "collective.unit", "collective.validFrom", "collective.validTo"], "contract": "collective:contract:rosterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Projection", "id": "collective:projection:publicCollective", "subject": "collective:Collective", "context": "Public", "purpose": "Publish approved identity, kind, purpose, and lifecycle", "profile": "collective.publicCollectiveProjection", "fields": ["collective.collectiveId", "collective.kind", "collective.purpose", "collective.lifecycleState"], "contract": "collective:contract:rosterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } }
+  ],
+  "conformance": { "muc": "2.0: Conformant (self-declared)", "mmas": "A3" }
+}

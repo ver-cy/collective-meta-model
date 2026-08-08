@@ -1,0 +1,6 @@
+id: capacity
+csn: collective.resources.capacity
+responsibility: Resources, capacity, and purpose-bound allocation.
+depends_on: [collective.work.coordination]
+concepts: [Resource, Capacity, Allocation]
+content: []

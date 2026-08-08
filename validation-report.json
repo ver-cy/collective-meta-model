@@ -1,0 +1,97 @@
+{
+  "reportId": "urn:vercy:validation:collective:0.1.0",
+  "target": {
+    "id": "urn:vercy:metamodel:collective",
+    "version": "0.1.0",
+    "fingerprint": "sha256:d45a17b99e0a50fd10562d49b780274ca023d40ccf40fa718f84382febf33a8d"
+  },
+  "validator": {
+    "id": "urn:vercy:collective:validator",
+    "version": "0.1.0"
+  },
+  "validatedAt": "2026-08-08T20:08:21.615Z",
+  "highestLevelAchieved": "V2",
+  "levels": [
+    {
+      "level": "V0",
+      "status": "pass",
+      "checks": [
+        {
+          "checkId": "V0-01",
+          "status": "pass",
+          "severity": "error",
+          "message": "MUIF JSON parses."
+        },
+        {
+          "checkId": "V0-02",
+          "status": "pass",
+          "severity": "error",
+          "message": "muif.version is 1.0."
+        }
+      ]
+    },
+    {
+      "level": "V1",
+      "status": "pass",
+      "checks": [
+        {
+          "checkId": "V1-02",
+          "status": "pass",
+          "severity": "error",
+          "message": "All MUIF primitives declare required fields."
+        },
+        {
+          "checkId": "V1-03",
+          "status": "pass",
+          "severity": "warning",
+          "message": "Composition hierarchy contains bundles and objects."
+        }
+      ]
+    },
+    {
+      "level": "V2",
+      "status": "pass",
+      "checks": [
+        {
+          "checkId": "V2-01",
+          "status": "pass",
+          "severity": "error",
+          "message": "Primitive identifiers are unique."
+        },
+        {
+          "checkId": "V2-03",
+          "status": "pass",
+          "severity": "error",
+          "message": "All CSNs are canonical and use a declared namespace."
+        },
+        {
+          "checkId": "V2-02",
+          "status": "pass",
+          "severity": "error",
+          "message": "Internal primitive references resolve."
+        },
+        {
+          "checkId": "V2-05",
+          "status": "pass",
+          "severity": "error",
+          "message": "Semantic fingerprint is sha256:d45a17b99e0a50fd10562d49b780274ca023d40ccf40fa718f84382febf33a8d."
+        }
+      ]
+    },
+    {
+      "level": "V3",
+      "status": "skipped",
+      "checks": []
+    },
+    {
+      "level": "V4",
+      "status": "skipped",
+      "checks": []
+    }
+  ],
+  "summary": {
+    "errors": 0,
+    "warnings": 0,
+    "info": 0
+  }
+}

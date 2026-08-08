@@ -1,0 +1,6 @@
+id: authority
+csn: collective.governance.authority
+responsibility: Authority grants, accountability, decision domains, and reporting.
+depends_on: [collective.participation.role]
+concepts: [DecisionDomain, AuthorityGrant, Accountability, reportsTo]
+content: []

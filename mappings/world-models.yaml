@@ -1,0 +1,45 @@
+mapping_id: collective-to-vercy-world-models
+version: 0.1.0
+status: working-draft
+source:
+  model: collective.metaModel
+  version: 0.1.0
+targets:
+  - id: world.organization
+    relation: related-broader-entity
+    mappings:
+      - from: collective.party
+        to: world.organization
+        rule: A Party may resolve to an Organization; CMM does not copy organization master data.
+      - from: collective.collective
+        to: world.organization
+        rule: Only a Collective with separately asserted organization identity maps to Organization.
+  - id: world.organizationalUnit
+    relation: compatible-specialization
+    mappings:
+      - from: collective.collective
+        to: world.organizationalUnit
+        when: collective.kind equals organizationalUnit
+  - id: world.employmentMembership
+    relation: partial-overlap
+    mappings:
+      - from: collective.membership
+        to: world.employmentMembership
+        rule: Collective Membership is broader and never implies employment.
+  - id: world.mandateCharter
+    relation: partial-overlap
+    mappings:
+      - from: collective.mandate
+        to: world.mandateCharter
+      - from: collective.policy
+        to: world.mandateCharter
+        rule: A charter may authorize mandates and policies but is not identical to either.
+  - id: world.project
+    relation: reference
+    mappings:
+      - from: collective.workSubject
+        to: world.project
+        rule: A projectTeam may coordinate work for a Project but is not the Project.
+notes:
+  - All mappings preserve source identity, namespace, version, ownership, and provenance.
+  - No mapping transfers mastership.

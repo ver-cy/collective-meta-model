@@ -1,0 +1,6 @@
+id: coordination
+csn: collective.work.coordination
+responsibility: Work coordination without redefining project or product models.
+depends_on: [collective.governance.policy]
+concepts: [WorkSubject, WorkItem, Commitment, dependsOn]
+content: []

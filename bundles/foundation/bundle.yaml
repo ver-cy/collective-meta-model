@@ -1,0 +1,7 @@
+id: foundation
+csn: collective.foundation
+responsibility: Persistent identity, context, collective kinds, and structural graphs.
+depends_on: []
+layers:
+  - path: layers/identity/layer.yaml
+  - path: layers/structure/layer.yaml

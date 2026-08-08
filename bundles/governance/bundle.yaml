@@ -1,0 +1,7 @@
+id: governance
+csn: collective.governance
+responsibility: Explicit decision authority, accountability, reporting, policy, and constraints.
+depends_on: [collective.participation]
+layers:
+  - path: layers/authority/layer.yaml
+  - path: layers/policy/layer.yaml

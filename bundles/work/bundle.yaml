@@ -1,0 +1,6 @@
+id: work
+csn: collective.work
+responsibility: Work subjects, work items, commitments, and dependencies.
+depends_on: [collective.governance]
+layers:
+  - path: layers/coordination/layer.yaml

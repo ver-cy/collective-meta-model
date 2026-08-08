@@ -1,0 +1,9 @@
+id: disclosure
+csn: collective.federation.disclosure
+responsibility: Schema discovery, semantic contracts, and projections.
+depends_on: [collective.history.evolution]
+concepts: [SemanticContract, ProjectionProfile]
+content:
+  - path: ../../../../mappings/world-models.yaml
+    kind: mapping
+    meaning: Alignment to the Vercy world model catalogue.

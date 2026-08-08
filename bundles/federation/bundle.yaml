@@ -1,0 +1,6 @@
+id: federation
+csn: collective.federation
+responsibility: Purpose-bound disclosure, contracts, projections, and semantic mappings.
+depends_on: [collective.history]
+layers:
+  - path: layers/disclosure/layer.yaml

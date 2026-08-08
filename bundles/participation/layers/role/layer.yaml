@@ -1,0 +1,6 @@
+id: role
+csn: collective.participation.role
+responsibility: Role definitions, positions, assignments, and mandates.
+depends_on: [collective.participation.membership]
+concepts: [RoleDefinition, Position, Assignment, Mandate]
+content: []

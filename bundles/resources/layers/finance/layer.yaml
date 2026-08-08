@@ -1,0 +1,6 @@
+id: finance
+csn: collective.resources.finance
+responsibility: Budget envelopes, cost object references, and funding allocation.
+depends_on: [collective.resources.capacity]
+concepts: [Budget, CostObject, FundingAllocation]
+content: []

@@ -1,0 +1,7 @@
+id: resources
+csn: collective.resources
+responsibility: Resource capacity, allocation, budgets, and funding.
+depends_on: [collective.work]
+layers:
+  - path: layers/capacity/layer.yaml
+  - path: layers/finance/layer.yaml

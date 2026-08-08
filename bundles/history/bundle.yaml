@@ -1,0 +1,6 @@
+id: history
+csn: collective.history
+responsibility: Immutable evolution events, corrections, conflicts, and lineage.
+depends_on: [collective.performance]
+layers:
+  - path: layers/evolution/layer.yaml

@@ -1,0 +1,7 @@
+id: participation
+csn: collective.participation
+responsibility: Temporal participation and role bindings.
+depends_on: [collective.foundation]
+layers:
+  - path: layers/membership/layer.yaml
+  - path: layers/role/layer.yaml
