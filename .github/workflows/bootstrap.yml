@@ -1,9 +1,7 @@
 name: Bootstrap repository
 
 on:
-  push:
-    paths:
-      - collective-meta-model-v0.1.0.zip
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -17,7 +15,7 @@ jobs:
         run: |
           unzip -o collective-meta-model-v0.1.0.zip
           rm collective-meta-model-v0.1.0.zip
-          rm .github/workflows/bootstrap.yml
+          rm .github/workflows/validate.yml
       - name: Publish canonical repository tree
         run: |
           git config user.name "Victor Bolshakov"
