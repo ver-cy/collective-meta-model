@@ -23,3 +23,7 @@ Party, WorkSubject, Resource, CostObject, currency, units, calendar, place, proj
 ## ADR-006: Typed polymorphic references and comparable scopes
 
 References with one known target type use a stable identifier property. References that may target different Object types use `TypedReference` so identity and type remain explicit. Governance-relevant boundaries use the reusable `Scope` value object; free-text scope is informative only.
+
+## ADR-007: Matrix placement is derived, not mandatory
+
+CMM does not require a separate matrix-cell or `matrixPlacement` object. A placement is a projection derived from explicit composition, membership, assignment, reporting, authority, accountability, work, and allocation graphs within a Context. Implementations may materialize that projection as an extension, but it must not replace or silently infer the underlying governed relations.

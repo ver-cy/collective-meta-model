@@ -1,15 +1,15 @@
 {
-  "reportId": "urn:vercy:validation:collective:0.1.0",
+  "reportId": "urn:vercy:validation:collective:0.2.0",
   "target": {
     "id": "urn:vercy:metamodel:collective",
-    "version": "0.1.0",
-    "fingerprint": "sha256:d45a17b99e0a50fd10562d49b780274ca023d40ccf40fa718f84382febf33a8d"
+    "version": "0.2.0",
+    "fingerprint": "sha256:5358f990ed3068b9f3bc7ac0fc3f37e5ea56015cf13e394a69bc479fb6e9dd48"
   },
   "validator": {
     "id": "urn:vercy:collective:validator",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
-  "validatedAt": "2026-08-08T20:08:21.615Z",
+  "validatedAt": "2026-08-08T20:43:15.230Z",
   "highestLevelAchieved": "V2",
   "levels": [
     {
@@ -45,6 +45,12 @@
           "status": "pass",
           "severity": "warning",
           "message": "Composition hierarchy contains bundles and objects."
+        },
+        {
+          "checkId": "V1-04",
+          "status": "pass",
+          "severity": "error",
+          "message": "External imports are declared."
         }
       ]
     },
@@ -74,7 +80,91 @@
           "checkId": "V2-05",
           "status": "pass",
           "severity": "error",
-          "message": "Semantic fingerprint is sha256:d45a17b99e0a50fd10562d49b780274ca023d40ccf40fa718f84382febf33a8d."
+          "message": "Semantic fingerprint is sha256:5358f990ed3068b9f3bc7ac0fc3f37e5ea56015cf13e394a69bc479fb6e9dd48."
+        }
+      ]
+    },
+    {
+      "level": "CMM",
+      "status": "pass",
+      "checks": [
+        {
+          "checkId": "CMM-EX-01",
+          "status": "pass",
+          "severity": "error",
+          "message": "Matrix example JSON parses."
+        },
+        {
+          "checkId": "CMM-SCHEMA-01",
+          "status": "pass",
+          "severity": "error",
+          "message": "Instance schema JSON parses."
+        },
+        {
+          "checkId": "CMM-EVENT-01",
+          "status": "pass",
+          "severity": "error",
+          "message": "The complete normative event catalogue is present."
+        },
+        {
+          "checkId": "CMM-CONTRACT-01",
+          "status": "pass",
+          "severity": "error",
+          "message": "Every standard projection is bound to a purpose-matching permission contract."
+        },
+        {
+          "checkId": "CMM-POSITION-01",
+          "status": "pass",
+          "severity": "error",
+          "message": "Position supports one or more RoleDefinitions."
+        },
+        {
+          "checkId": "CMM-EX-02",
+          "status": "pass",
+          "severity": "error",
+          "message": "Example has required root fields."
+        },
+        {
+          "checkId": "CMM-EX-03",
+          "status": "pass",
+          "severity": "error",
+          "message": "Example record identifiers are unique."
+        },
+        {
+          "checkId": "CMM-EX-04",
+          "status": "pass",
+          "severity": "error",
+          "message": "Example records carry owner and provenance."
+        },
+        {
+          "checkId": "CMM-EX-05",
+          "status": "pass",
+          "severity": "error",
+          "message": "All example references resolve."
+        },
+        {
+          "checkId": "CMM-EX-06",
+          "status": "pass",
+          "severity": "error",
+          "message": "Every finite example interval has validTo later than validFrom."
+        },
+        {
+          "checkId": "CMM-EX-07",
+          "status": "pass",
+          "severity": "error",
+          "message": "Every checked example instant is parseable."
+        },
+        {
+          "checkId": "CMM-SCHEMA-02",
+          "status": "pass",
+          "severity": "error",
+          "message": "Instance schema identity and version agree."
+        },
+        {
+          "checkId": "CMM-SCHEMA-03",
+          "status": "pass",
+          "severity": "error",
+          "message": "Every example root collection is declared by the instance schema."
         }
       ]
     },

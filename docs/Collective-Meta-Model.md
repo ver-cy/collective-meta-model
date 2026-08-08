@@ -2,7 +2,7 @@
 
 **Document ID:** CMM-001  
 **Document Class:** Normative  
-**Version:** 0.1.0  
+**Version:** 0.2.0
 **Status:** Working Draft  
 **Published:** 2026-08-08  
 **Owner:** ver-cy  
@@ -42,7 +42,7 @@ An implementation conforms to CMM Core when it implements Sections 4 through 12,
 
 `collective.party` is an abstract integration boundary for an independently identified agent that may participate in or govern a Collective. A Party MAY resolve to a person, organization, autonomous agent, or another sovereign entity. CMM owns only the reference, not the Party's master data.
 
-Required semantics: `partyId`, `partyType`, `owner`, and `provenance`.
+Required semantics: `partyId`, `partyType`, `masterRef`, and `provenance`. `masterRef` identifies the sovereign master of the Party identity; `provenance.owner` identifies the owner of the local assertion. They MAY coincide but SHALL NOT be conflated.
 
 ### 4.2 Collective
 
@@ -54,7 +54,7 @@ Required properties:
 - `collective.kind`: one controlled value from `organizationalUnit`, `projectTeam`, `productTeam`, `communityOfPractice`, `governanceBody`, `externalPartnerGroup`, `temporaryTaskForce`, or an explicitly namespaced extension;
 - `collective.purpose`: the declared reason for existence;
 - `collective.lifecycleState`: Draft, Active, Suspended, Deprecated, Retired, or Terminated;
-- `collective.owner`: Party that masters the Collective assertion;
+- `collective.masterRef`: Party that masters the Collective identity;
 - `collective.validFrom` and optional `collective.validTo`.
 
 A change of kind that changes the social identity of the group SHOULD create a successor Collective rather than silently mutate the original.
@@ -65,7 +65,7 @@ A change of kind that changes the social identity of the group SHOULD create a s
 
 ### 4.4 Context
 
-Every significant assertion SHALL carry or inherit a context. A context identifies the Universe, namespace, organization, time, scenario, and purpose within which the assertion is valid. A context SHALL NOT replace the identity of the referenced object.
+Every significant assertion SHALL carry or inherit a context. A context identifies at least the Universe, namespace, and purpose within which the assertion is valid, and MAY further identify organization, effective time, and scenario. A context SHALL NOT replace the identity of the referenced object.
 
 ### 4.5 Typed reference and scope
 
@@ -130,7 +130,7 @@ Authority and accountability are independent. An implementation SHALL NOT infer 
 
 ### 7.3 Reporting
 
-`collective.reportsTo` is an informational relationship describing an agreed reporting channel. Reporting SHALL NOT imply composition, authority, employment, or accountability unless a separate explicit assertion states it.
+`collective.reportingLine` is a first-class, temporal informational association whose typed endpoints MAY identify Parties or Positions. `collective.reportsTo` is its Party-to-Party MUIF relationship specialization. Reporting SHALL NOT imply composition, authority, employment, or accountability unless a separate explicit assertion states it.
 
 ### 7.4 Policy and constraint
 
@@ -152,7 +152,7 @@ Authority and accountability are independent. An implementation SHALL NOT infer 
 
 ### 8.4 Dependency
 
-`collective.dependsOn` relates one WorkItem, Commitment, Objective, Collective, or resource need to another. Dependency type, direction, condition, lag, criticality, and validity SHALL be explicit. Cycles MAY be valid but SHOULD be surfaced for governance review.
+`collective.dependency` is the first-class polymorphic association relating one WorkItem, Commitment, Objective, Collective, or resource need to another through typed references. `collective.dependsOn` is its WorkItem-to-WorkItem MUIF relationship specialization. Dependency type, direction, condition, lag, criticality, and validity SHALL be explicit. Cycles MAY be valid but SHOULD be surfaced for governance review.
 
 ## 9. Resources and finance
 
@@ -195,6 +195,8 @@ Core event classes:
 - ProjectionDisclosed, ConflictDetected, ConflictResolved.
 
 Every assertion SHALL expose owner and provenance. Derived assertions SHALL identify their inputs and transformation. A consumer SHALL be able to determine origin, authority, time, context, and evolution without inspecting private data.
+
+`collective.lineage` records the typed subject of a derived assertion, its one or more typed inputs, the transformation, and provenance. `collective.conflict` preserves the typed subject and at least two conflicting assertion references, conflict type, resolution state, detection time, optional resolution, and provenance. Detecting or resolving a Conflict SHALL append an Event; resolution SHALL NOT delete the conflicting assertions.
 
 ## 12. Contracts and projections
 
@@ -280,7 +282,7 @@ The matrix is the superposition of independent graphs over shared identities:
 composition graph      Collective -> Collective
 participation graph    Party -> Membership -> Collective
 role graph             Party -> Assignment -> RoleDefinition/Position
-reporting graph        Party/Position -> Party/Position
+reporting graph        Party/Position -> ReportingLine -> Party/Position
 authority graph        Grantor -> AuthorityGrant -> Grantee + DecisionDomain
 accountability graph   Accountable -> Accountability -> Outcome/Obligation
 work graph             Collective/Party -> Commitment/WorkItem -> WorkSubject
@@ -302,10 +304,10 @@ Published versions are immutable. Compatible concepts may be added in a MINOR re
 
 Implementations SHALL minimize disclosed fields by purpose. Sensitive Party, membership, allocation, performance, and authority data SHOULD be protected by explicit policy and contract. Authorization decisions SHALL use authoritative grants and policies, not organizational-chart inference. Audit logs SHOULD record disclosure, delegation, conflict resolution, and provenance changes.
 
-## 19. Open issues for 0.2
+## 19. Open issues for 0.3
 
 - adopt canonical external connectors for Party, Project, Product, Currency, Units, Time, and Provenance;
 - formalize SHACL or equivalent cross-record constraints;
 - standardize decision-domain and membership-kind controlled vocabularies;
 - publish migration and federation negotiation examples;
-- seek independent conformance certification.
+- seek independent conformance certification beyond the Claude/Grok design reviews recorded for 0.2.0.

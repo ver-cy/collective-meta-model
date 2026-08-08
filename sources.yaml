@@ -10,7 +10,7 @@ datasets:
     master:
       type: repository
       uri: https://github.com/ver-cy/collective-meta-model
-      ref: main
+      ref: v0.2.0
     authority: ver-cy
     status: active
     conflict_rule: repository-wins
@@ -22,7 +22,7 @@ datasets:
     master:
       type: external-repository
       uri: https://github.com/ver-cy/meta-universe
-      ref: main
+      ref: 9cf157bfaa4092c072a1238ecf4cc784a9e53dca
     status: referenced
     conflict_rule: external-master-wins
   - id: world-model-catalogue
@@ -31,6 +31,6 @@ datasets:
     master:
       type: external-repository
       uri: https://github.com/ver-cy/world-models
-      ref: main
+      ref: a46d5f8a17b61ca9af7c537cf365b58ba1e610f0
     status: referenced
     conflict_rule: crosswalk-documents-differences

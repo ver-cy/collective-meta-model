@@ -1,9 +1,9 @@
 mapping_id: collective-to-vercy-world-models
-version: 0.1.0
+version: 0.2.0
 status: working-draft
 source:
   model: collective.metaModel
-  version: 0.1.0
+  version: 0.2.0
 targets:
   - id: world.organization
     relation: related-broader-entity

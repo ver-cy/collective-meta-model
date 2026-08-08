@@ -3,8 +3,8 @@
   "metaModel": {
     "id": "urn:vercy:metamodel:collective",
     "csn": "collective.metaModel",
-    "version": "0.1.0",
-    "fingerprint": "sha256:d45a17b99e0a50fd10562d49b780274ca023d40ccf40fa718f84382febf33a8d",
+    "version": "0.2.0",
+    "fingerprint": "sha256:5358f990ed3068b9f3bc7ac0fc3f37e5ea56015cf13e394a69bc479fb6e9dd48",
     "displayName": "Collective Meta-Model",
     "description": "Organizational units and cross-functional teams in a context-aware matrix."
   },
@@ -19,6 +19,9 @@
     { "csn": "collective.history", "layers": ["collective.history.evolution"] },
     { "csn": "collective.federation", "layers": ["collective.federation.disclosure"] }
   ],
+  "imports": [
+    { "source": "https://github.com/ver-cy/meta-universe", "version": ">=2.0.0 <3.0.0" }
+  ],
   "objects": [
     {
       "muifType": "Object", "id": "collective:Party", "csn": "collective.party", "kind": "Agent", "namespace": "collective",
@@ -27,7 +30,7 @@
         { "name": "collective.partyId", "valueType": "string", "required": true },
         { "name": "collective.partyType", "valueType": "string", "required": true },
         { "name": "collective.externalCsn", "valueType": "string", "required": false },
-        { "name": "collective.owner", "valueType": "string", "required": true }
+        { "name": "collective.masterRef", "valueType": "string", "required": true }
       ]
     },
     {
@@ -36,6 +39,8 @@
       "properties": [
         { "name": "collective.contextId", "valueType": "string", "required": true },
         { "name": "collective.universe", "valueType": "string", "required": true },
+        { "name": "collective.namespace", "valueType": "string", "required": true },
+        { "name": "collective.effectiveAt", "valueType": "dateTime", "required": false },
         { "name": "collective.scenario", "valueType": "string", "required": false },
         { "name": "collective.purpose", "valueType": "string", "required": true }
       ]
@@ -57,6 +62,7 @@
         { "name": "collective.scopeKind", "valueType": "string", "required": true },
         { "name": "collective.subjects", "valueType": "collective.typedReference", "required": true, "multiplicity": "1..*" },
         { "name": "collective.contextRef", "valueType": "collective.context", "required": true },
+        { "name": "collective.jurisdictionRef", "valueType": "collective.typedReference", "required": false },
         { "name": "collective.inclusionExpression", "valueType": "string", "required": false },
         { "name": "collective.exclusionExpression", "valueType": "string", "required": false }
       ]
@@ -72,7 +78,7 @@
         { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
         { "name": "collective.validTo", "valueType": "dateTime", "required": false },
         { "name": "collective.contextRef", "valueType": "collective.context", "required": true },
-        { "name": "collective.owner", "valueType": "string", "required": true }
+        { "name": "collective.masterRef", "valueType": "string", "required": true }
       ]
     },
     {
@@ -113,7 +119,7 @@
       "properties": [
         { "name": "collective.positionId", "valueType": "string", "required": true },
         { "name": "collective.collectiveRef", "valueType": "collective.collective", "required": true },
-        { "name": "collective.roleDefinitionRef", "valueType": "collective.roleDefinition", "required": true },
+        { "name": "collective.roleDefinitionRefs", "valueType": "collective.roleDefinition", "required": true, "multiplicity": "1..*" },
         { "name": "collective.incumbentLimit", "valueType": "integer", "required": false }
       ]
     },
@@ -126,6 +132,8 @@
         { "name": "collective.roleDefinitionRef", "valueType": "collective.roleDefinition", "required": true },
         { "name": "collective.positionRef", "valueType": "collective.position", "required": false },
         { "name": "collective.membershipRef", "valueType": "collective.membership", "required": false },
+        { "name": "collective.collectiveRef", "valueType": "collective.collective", "required": false },
+        { "name": "collective.workSubjectRef", "valueType": "collective.workSubject", "required": false },
         { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
         { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
@@ -135,9 +143,11 @@
       "displayName": "Mandate", "provenance": { "owner": "urn:vercy:collective:maintainers" },
       "properties": [
         { "name": "collective.mandateId", "valueType": "string", "required": true },
-        { "name": "collective.issuerRef", "valueType": "collective.party", "required": true },
-        { "name": "collective.recipientRef", "valueType": "collective.party", "required": true },
+        { "name": "collective.issuerRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.recipientRef", "valueType": "collective.typedReference", "required": true },
         { "name": "collective.scopeRef", "valueType": "collective.scope", "required": true },
+        { "name": "collective.revocationRule", "valueType": "string", "required": true },
+        { "name": "collective.revocationState", "valueType": "string", "required": true },
         { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
         { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
@@ -147,7 +157,9 @@
       "displayName": "Decision Domain", "provenance": { "owner": "urn:vercy:collective:maintainers" },
       "properties": [
         { "name": "collective.decisionDomainId", "valueType": "string", "required": true },
+        { "name": "collective.decisionDomainName", "valueType": "string", "required": false },
         { "name": "collective.scopeRef", "valueType": "collective.scope", "required": true },
+        { "name": "collective.constraintRefs", "valueType": "collective.constraint", "required": false, "multiplicity": "0..*" },
         { "name": "collective.contextRef", "valueType": "collective.context", "required": true }
       ]
     },
@@ -156,13 +168,14 @@
       "displayName": "Authority Grant", "provenance": { "owner": "urn:vercy:collective:maintainers" },
       "properties": [
         { "name": "collective.authorityGrantId", "valueType": "string", "required": true },
-        { "name": "collective.grantorRef", "valueType": "collective.party", "required": true },
-        { "name": "collective.granteeRef", "valueType": "collective.party", "required": true },
+        { "name": "collective.grantorRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.granteeRef", "valueType": "collective.typedReference", "required": true },
         { "name": "collective.decisionDomainRef", "valueType": "collective.decisionDomain", "required": true },
         { "name": "collective.rightKind", "valueType": "string", "required": true },
         { "name": "collective.scopeRef", "valueType": "collective.scope", "required": true },
         { "name": "collective.mandateRef", "valueType": "collective.mandate", "required": false },
         { "name": "collective.parentGrantRef", "valueType": "collective.authorityGrant", "required": false },
+        { "name": "collective.revocationState", "valueType": "string", "required": true },
         { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
         { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
@@ -172,10 +185,23 @@
       "displayName": "Accountability", "provenance": { "owner": "urn:vercy:collective:maintainers" },
       "properties": [
         { "name": "collective.accountabilityId", "valueType": "string", "required": true },
-        { "name": "collective.accountableRef", "valueType": "collective.party", "required": true },
+        { "name": "collective.accountableRef", "valueType": "collective.typedReference", "required": true },
         { "name": "collective.targetRef", "valueType": "collective.typedReference", "required": true },
         { "name": "collective.scopeRef", "valueType": "collective.scope", "required": true },
         { "name": "collective.acceptanceState", "valueType": "string", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:ReportingLine", "csn": "collective.reportingLine", "kind": "Entity", "namespace": "collective",
+      "displayName": "Reporting Line", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.reportingLineId", "valueType": "string", "required": true },
+        { "name": "collective.reporterRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.reportingRecipientRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.reportingChannel", "valueType": "string", "required": false },
+        { "name": "collective.scopeRef", "valueType": "collective.scope", "required": false },
         { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
         { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
@@ -185,9 +211,13 @@
       "displayName": "Policy", "provenance": { "owner": "urn:vercy:collective:maintainers" },
       "properties": [
         { "name": "collective.policyId", "valueType": "string", "required": true },
+        { "name": "collective.ownerRef", "valueType": "collective.typedReference", "required": true },
         { "name": "collective.scopeRef", "valueType": "collective.scope", "required": true },
+        { "name": "collective.lifecycleState", "valueType": "string", "required": true },
         { "name": "collective.precedence", "valueType": "integer", "required": false },
-        { "name": "collective.enforcementMode", "valueType": "string", "required": true }
+        { "name": "collective.enforcementMode", "valueType": "string", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": false },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
     },
     {
@@ -205,8 +235,9 @@
       "displayName": "Work Subject", "provenance": { "owner": "urn:vercy:collective:maintainers" },
       "properties": [
         { "name": "collective.workSubjectId", "valueType": "string", "required": true },
+        { "name": "collective.subjectType", "valueType": "string", "required": true },
         { "name": "collective.externalCsn", "valueType": "string", "required": false },
-        { "name": "collective.owner", "valueType": "string", "required": true }
+        { "name": "collective.ownerRef", "valueType": "collective.typedReference", "required": true }
       ]
     },
     {
@@ -216,7 +247,10 @@
         { "name": "collective.workItemId", "valueType": "string", "required": true },
         { "name": "collective.workSubjectRef", "valueType": "collective.workSubject", "required": false },
         { "name": "collective.purpose", "valueType": "string", "required": true },
-        { "name": "collective.status", "valueType": "string", "required": true }
+        { "name": "collective.status", "valueType": "string", "required": true },
+        { "name": "collective.ownerRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
     },
     {
@@ -227,7 +261,24 @@
         { "name": "collective.promisorRef", "valueType": "collective.typedReference", "required": true },
         { "name": "collective.beneficiaryRef", "valueType": "collective.typedReference", "required": true },
         { "name": "collective.outcome", "valueType": "string", "required": true },
-        { "name": "collective.acceptanceCriteria", "valueType": "string", "required": true }
+        { "name": "collective.acceptanceCriteria", "valueType": "string", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Dependency", "csn": "collective.dependency", "kind": "Entity", "namespace": "collective",
+      "displayName": "Dependency", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.dependencyId", "valueType": "string", "required": true },
+        { "name": "collective.dependencySourceRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.dependencyTargetRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.dependencyType", "valueType": "string", "required": true },
+        { "name": "collective.dependencyCondition", "valueType": "string", "required": false },
+        { "name": "collective.dependencyLag", "valueType": "string", "required": false },
+        { "name": "collective.dependencyCriticality", "valueType": "string", "required": false },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
     },
     {
@@ -236,18 +287,19 @@
       "properties": [
         { "name": "collective.resourceId", "valueType": "string", "required": true },
         { "name": "collective.resourceKind", "valueType": "string", "required": true },
-        { "name": "collective.owner", "valueType": "string", "required": true }
+        { "name": "collective.ownerRef", "valueType": "collective.typedReference", "required": true }
       ]
     },
     {
       "muifType": "Object", "id": "collective:Capacity", "csn": "collective.capacity", "kind": "Value", "namespace": "collective",
       "displayName": "Capacity", "provenance": { "owner": "urn:vercy:collective:maintainers" },
       "properties": [
+        { "name": "collective.capacityId", "valueType": "string", "required": true },
         { "name": "collective.resourceRef", "valueType": "collective.resource", "required": true },
         { "name": "collective.quantity", "valueType": "decimal", "required": true },
         { "name": "collective.unit", "valueType": "string", "required": true },
         { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
-        { "name": "collective.validTo", "valueType": "dateTime", "required": true }
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
     },
     {
@@ -260,8 +312,9 @@
         { "name": "collective.quantity", "valueType": "decimal", "required": true },
         { "name": "collective.unit", "valueType": "string", "required": true },
         { "name": "collective.purpose", "valueType": "string", "required": true },
+        { "name": "collective.priority", "valueType": "integer", "required": false },
         { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
-        { "name": "collective.validTo", "valueType": "dateTime", "required": true }
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
     },
     {
@@ -271,8 +324,10 @@
         { "name": "collective.budgetId", "valueType": "string", "required": true },
         { "name": "collective.amount", "valueType": "decimal", "required": true },
         { "name": "collective.currency", "valueType": "string", "required": true },
+        { "name": "collective.ownerRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.constraintRefs", "valueType": "collective.constraint", "required": false, "multiplicity": "0..*" },
         { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
-        { "name": "collective.validTo", "valueType": "dateTime", "required": true }
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
     },
     {
@@ -280,8 +335,8 @@
       "displayName": "Cost Object", "provenance": { "owner": "urn:vercy:collective:maintainers" },
       "properties": [
         { "name": "collective.costObjectId", "valueType": "string", "required": true },
-        { "name": "collective.externalCsn", "valueType": "string", "required": false },
-        { "name": "collective.owner", "valueType": "string", "required": true }
+        { "name": "collective.externalCsn", "valueType": "string", "required": true },
+        { "name": "collective.ownerRef", "valueType": "collective.typedReference", "required": true }
       ]
     },
     {
@@ -301,8 +356,10 @@
       "properties": [
         { "name": "collective.objectiveId", "valueType": "string", "required": true },
         { "name": "collective.desiredOutcome", "valueType": "string", "required": true },
-        { "name": "collective.owner", "valueType": "string", "required": true },
-        { "name": "collective.status", "valueType": "string", "required": true }
+        { "name": "collective.ownerRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.status", "valueType": "string", "required": true },
+        { "name": "collective.validFrom", "valueType": "dateTime", "required": true },
+        { "name": "collective.validTo", "valueType": "dateTime", "required": false }
       ]
     },
     {
@@ -311,8 +368,10 @@
       "properties": [
         { "name": "collective.metricId", "valueType": "string", "required": true },
         { "name": "collective.method", "valueType": "string", "required": true },
+        { "name": "collective.scale", "valueType": "string", "required": false },
         { "name": "collective.unit", "valueType": "string", "required": true },
-        { "name": "collective.direction", "valueType": "string", "required": false }
+        { "name": "collective.direction", "valueType": "string", "required": false },
+        { "name": "collective.dataAuthorityRef", "valueType": "collective.typedReference", "required": true }
       ]
     },
     {
@@ -324,6 +383,30 @@
         { "name": "collective.targetRef", "valueType": "collective.typedReference", "required": true },
         { "name": "collective.value", "valueType": "decimal", "required": true },
         { "name": "collective.observedAt", "valueType": "dateTime", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Lineage", "csn": "collective.lineage", "kind": "Entity", "namespace": "collective",
+      "displayName": "Lineage", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.lineageId", "valueType": "string", "required": true },
+        { "name": "collective.lineageSubjectRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.lineageInputRefs", "valueType": "collective.typedReference", "required": true, "multiplicity": "1..*" },
+        { "name": "collective.transformation", "valueType": "string", "required": true }
+      ]
+    },
+    {
+      "muifType": "Object", "id": "collective:Conflict", "csn": "collective.conflict", "kind": "Entity", "namespace": "collective",
+      "displayName": "Conflict", "provenance": { "owner": "urn:vercy:collective:maintainers" },
+      "properties": [
+        { "name": "collective.conflictId", "valueType": "string", "required": true },
+        { "name": "collective.conflictSubjectRef", "valueType": "collective.typedReference", "required": true },
+        { "name": "collective.conflictingAssertionRefs", "valueType": "collective.typedReference", "required": true, "multiplicity": "1..*" },
+        { "name": "collective.conflictType", "valueType": "string", "required": true },
+        { "name": "collective.resolutionState", "valueType": "string", "required": true },
+        { "name": "collective.detectedAt", "valueType": "dateTime", "required": true },
+        { "name": "collective.resolvedAt", "valueType": "dateTime", "required": false },
+        { "name": "collective.resolutionRef", "valueType": "collective.typedReference", "required": false }
       ]
     }
   ],
@@ -339,25 +422,47 @@
   ],
   "events": [
     { "muifType": "Event", "id": "collective:event:collectiveCreated", "type": "Lifecycle", "subject": "collective:Collective", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.collectiveCreated" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:collectiveKindChanged", "type": "Semantic", "subject": "collective:Collective", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.collectiveKindChanged" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:collectiveSuspended", "type": "Lifecycle", "subject": "collective:Collective", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.collectiveSuspended" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:collectiveRetired", "type": "Lifecycle", "subject": "collective:Collective", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.collectiveRetired" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
     { "muifType": "Event", "id": "collective:event:membershipStarted", "type": "Lifecycle", "subject": "collective:Membership", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.membershipStarted" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:membershipChanged", "type": "Semantic", "subject": "collective:Membership", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.membershipChanged" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:membershipEnded", "type": "Lifecycle", "subject": "collective:Membership", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.membershipEnded" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
     { "muifType": "Event", "id": "collective:event:assignmentStarted", "type": "Lifecycle", "subject": "collective:Assignment", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.assignmentStarted" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:assignmentChanged", "type": "Semantic", "subject": "collective:Assignment", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.assignmentChanged" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:assignmentEnded", "type": "Lifecycle", "subject": "collective:Assignment", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.assignmentEnded" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
     { "muifType": "Event", "id": "collective:event:mandateIssued", "type": "Semantic", "subject": "collective:Mandate", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.mandateIssued" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:mandateRevoked", "type": "Lifecycle", "subject": "collective:Mandate", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.mandateRevoked" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
     { "muifType": "Event", "id": "collective:event:authorityGranted", "type": "Semantic", "subject": "collective:AuthorityGrant", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.authorityGranted" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:authorityDelegated", "type": "Semantic", "subject": "collective:AuthorityGrant", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.authorityDelegated" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:authorityRevoked", "type": "Lifecycle", "subject": "collective:AuthorityGrant", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.authorityRevoked" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
     { "muifType": "Event", "id": "collective:event:accountabilityAccepted", "type": "Semantic", "subject": "collective:Accountability", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.accountabilityAccepted" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:accountabilityTransferred", "type": "Semantic", "subject": "collective:Accountability", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.accountabilityTransferred" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:accountabilityEnded", "type": "Lifecycle", "subject": "collective:Accountability", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.accountabilityEnded" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
     { "muifType": "Event", "id": "collective:event:allocationCommitted", "type": "Semantic", "subject": "collective:Allocation", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.allocationCommitted" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
-    { "muifType": "Event", "id": "collective:event:conflictDetected", "type": "Conflict", "subject": "collective:Collective", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.conflictDetected" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } }
+    { "muifType": "Event", "id": "collective:event:allocationChanged", "type": "Semantic", "subject": "collective:Allocation", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.allocationChanged" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:allocationReleased", "type": "Lifecycle", "subject": "collective:Allocation", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.allocationReleased" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:policyActivated", "type": "Lifecycle", "subject": "collective:Policy", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.policyActivated" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:policySuperseded", "type": "Lifecycle", "subject": "collective:Policy", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.policySuperseded" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:projectionDisclosed", "type": "Disclosure", "subject": "collective:projection:publicCollective", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.projectionDisclosed" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:conflictDetected", "type": "Conflict", "subject": "collective:Conflict", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.conflictDetected" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Event", "id": "collective:event:conflictResolved", "type": "Conflict", "subject": "collective:Conflict", "occurrenceTime": "2026-08-08T00:00:00Z", "payload": { "eventCsn": "collective.conflictResolved" }, "provenance": { "owner": "urn:vercy:collective:maintainers" } }
   ],
   "contracts": [
-    { "muifType": "Contract", "id": "collective:contract:rosterDisclosure", "kind": "KnowledgeDisclosure", "purpose": "Disclose the minimum team roster required for an authorized operational purpose", "parties": ["urn:vercy:collective:publisher", "urn:vercy:collective:consumer"], "permissions": ["read:collective.membership", "read:collective.assignment"], "restrictions": ["purpose-bound", "data-minimization", "no-onward-disclosure"], "provenance": { "owner": "urn:vercy:collective:maintainers" } },
-    { "muifType": "Contract", "id": "collective:contract:authorityRegisterDisclosure", "kind": "KnowledgeDisclosure", "purpose": "Disclose active decision authority needed to validate a decision", "parties": ["urn:vercy:collective:publisher", "urn:vercy:collective:consumer"], "permissions": ["read:collective.authorityGrant"], "restrictions": ["purpose-bound", "active-grants-only"], "provenance": { "owner": "urn:vercy:collective:maintainers" } }
+    { "muifType": "Contract", "id": "collective:contract:organizationChartDisclosure", "kind": "KnowledgeDisclosure", "purpose": "Disclose composition and named positions without implying authority", "parties": ["urn:vercy:collective:publisher", "urn:vercy:collective:consumer"], "permissions": ["read:collective.collective", "read:collective.composedOf", "read:collective.position"], "restrictions": ["purpose-bound", "no-authority-inference", "retention:P30D", "onward-disclosure:prohibited"], "terminationConditions": ["purpose-fulfilled", "authorization-withdrawn", "contract-expired"], "lifecycleState": "Active", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Contract", "id": "collective:contract:rosterDisclosure", "kind": "KnowledgeDisclosure", "purpose": "Disclose the minimum team roster required for an authorized operational purpose", "parties": ["urn:vercy:collective:publisher", "urn:vercy:collective:consumer"], "permissions": ["read:collective.membership", "read:collective.assignment"], "restrictions": ["purpose-bound", "data-minimization", "retention:P30D", "onward-disclosure:prohibited"], "terminationConditions": ["purpose-fulfilled", "authorization-withdrawn", "contract-expired"], "lifecycleState": "Active", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Contract", "id": "collective:contract:authorityRegisterDisclosure", "kind": "KnowledgeDisclosure", "purpose": "Disclose active decision authority needed to validate a decision", "parties": ["urn:vercy:collective:publisher", "urn:vercy:collective:consumer"], "permissions": ["read:collective.authorityGrant"], "restrictions": ["purpose-bound", "active-grants-only", "retention:P30D", "onward-disclosure:prohibited"], "terminationConditions": ["decision-validation-complete", "authorization-withdrawn", "contract-expired"], "lifecycleState": "Active", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Contract", "id": "collective:contract:accountabilityMapDisclosure", "kind": "KnowledgeDisclosure", "purpose": "Disclose accepted accountability for selected outcomes", "parties": ["urn:vercy:collective:publisher", "urn:vercy:collective:consumer"], "permissions": ["read:collective.accountability"], "restrictions": ["purpose-bound", "accepted-accountabilities-only", "retention:P30D", "onward-disclosure:prohibited"], "terminationConditions": ["governance-review-complete", "authorization-withdrawn", "contract-expired"], "lifecycleState": "Active", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Contract", "id": "collective:contract:capacityPlanDisclosure", "kind": "KnowledgeDisclosure", "purpose": "Disclose aggregated capacity and allocations for planning", "parties": ["urn:vercy:collective:publisher", "urn:vercy:collective:consumer"], "permissions": ["read:collective.capacity", "read:collective.allocation"], "restrictions": ["purpose-bound", "aggregate-where-possible", "no-unnecessary-person-data", "retention:P30D", "onward-disclosure:prohibited"], "terminationConditions": ["planning-cycle-complete", "authorization-withdrawn", "contract-expired"], "lifecycleState": "Active", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Contract", "id": "collective:contract:publicCollectiveDisclosure", "kind": "KnowledgeDisclosure", "purpose": "Publish approved Collective identity, purpose, lifecycle, and contact surface", "parties": ["urn:vercy:collective:publisher", "urn:vercy:collective:public"], "permissions": ["read:collective.publicCollectiveProjection"], "restrictions": ["approved-fields-only", "no-membership-data", "retention:unrestricted-for-published-version", "onward-disclosure:permitted-with-attribution"], "terminationConditions": ["publication-withdrawn", "projection-superseded"], "lifecycleState": "Active", "provenance": { "owner": "urn:vercy:collective:maintainers" } }
   ],
   "projections": [
-    { "muifType": "Projection", "id": "collective:projection:organizationChart", "subject": "collective:Collective", "context": "OrganizationChart", "purpose": "Present composition and named positions without inferring authority", "profile": "collective.organizationChartProjection", "fields": ["collective.collectiveId", "collective.kind", "collective.lifecycleState"], "contract": "collective:contract:rosterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
-    { "muifType": "Projection", "id": "collective:projection:teamRoster", "subject": "collective:Membership", "context": "TeamOperations", "purpose": "Provide a minimal active roster for team coordination", "profile": "collective.teamRosterProjection", "fields": ["collective.partyRef", "collective.collectiveRef", "collective.membershipKind", "collective.status"], "contract": "collective:contract:rosterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Projection", "id": "collective:projection:organizationChart", "subject": "collective:Collective", "context": "OrganizationChart", "purpose": "Present composition and named positions without inferring authority", "profile": "collective.organizationChartProjection", "fields": ["collective.collectiveId", "collective.kind", "collective.lifecycleState", "collective.composedOf", "collective.positionId"], "contract": "collective:contract:organizationChartDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Projection", "id": "collective:projection:teamRoster", "subject": "collective:Membership", "context": "TeamOperations", "purpose": "Provide a minimal active roster for team coordination", "profile": "collective.teamRosterProjection", "fields": ["collective.partyRef", "collective.collectiveRef", "collective.membershipKind", "collective.status", "collective.roleDefinitionRef", "collective.positionRef"], "contract": "collective:contract:rosterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
     { "muifType": "Projection", "id": "collective:projection:authorityRegister", "subject": "collective:AuthorityGrant", "context": "DecisionValidation", "purpose": "Verify whether a party has an active decision right", "profile": "collective.authorityRegisterProjection", "fields": ["collective.grantorRef", "collective.granteeRef", "collective.decisionDomainRef", "collective.rightKind", "collective.validFrom", "collective.validTo"], "contract": "collective:contract:authorityRegisterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
-    { "muifType": "Projection", "id": "collective:projection:accountabilityMap", "subject": "collective:Accountability", "context": "Governance", "purpose": "Show accepted accountability for selected outcomes", "profile": "collective.accountabilityMapProjection", "fields": ["collective.accountableRef", "collective.targetRef", "collective.scopeRef", "collective.acceptanceState"], "contract": "collective:contract:authorityRegisterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
-    { "muifType": "Projection", "id": "collective:projection:capacityPlan", "subject": "collective:Allocation", "context": "CapacityPlanning", "purpose": "Expose aggregated resource allocation for planning", "profile": "collective.capacityPlanProjection", "fields": ["collective.resourceRef", "collective.recipientRef", "collective.quantity", "collective.unit", "collective.validFrom", "collective.validTo"], "contract": "collective:contract:rosterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
-    { "muifType": "Projection", "id": "collective:projection:publicCollective", "subject": "collective:Collective", "context": "Public", "purpose": "Publish approved identity, kind, purpose, and lifecycle", "profile": "collective.publicCollectiveProjection", "fields": ["collective.collectiveId", "collective.kind", "collective.purpose", "collective.lifecycleState"], "contract": "collective:contract:rosterDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } }
+    { "muifType": "Projection", "id": "collective:projection:accountabilityMap", "subject": "collective:Accountability", "context": "Governance", "purpose": "Show accepted accountability for selected outcomes", "profile": "collective.accountabilityMapProjection", "fields": ["collective.accountableRef", "collective.targetRef", "collective.scopeRef", "collective.acceptanceState"], "contract": "collective:contract:accountabilityMapDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Projection", "id": "collective:projection:capacityPlan", "subject": "collective:Allocation", "context": "CapacityPlanning", "purpose": "Expose aggregated resource allocation for planning", "profile": "collective.capacityPlanProjection", "fields": ["collective.resourceRef", "collective.recipientRef", "collective.quantity", "collective.unit", "collective.validFrom", "collective.validTo"], "contract": "collective:contract:capacityPlanDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } },
+    { "muifType": "Projection", "id": "collective:projection:publicCollective", "subject": "collective:Collective", "context": "Public", "purpose": "Publish approved identity, kind, purpose, and lifecycle", "profile": "collective.publicCollectiveProjection", "fields": ["collective.collectiveId", "collective.kind", "collective.purpose", "collective.lifecycleState"], "contract": "collective:contract:publicCollectiveDisclosure", "provenance": { "owner": "urn:vercy:collective:maintainers" } }
   ],
-  "conformance": { "muc": "2.0: Conformant (self-declared)", "mmas": "A3" }
+  "conformance": { "muc": "2.0: Self-assessed alignment (not certified)", "mmas": "A3" }
 }

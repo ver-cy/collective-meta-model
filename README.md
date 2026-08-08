@@ -2,7 +2,7 @@
 
 The Collective Meta-Model (CMM) is a vendor-neutral semantic model for organizational units, product teams, project teams, communities, governance bodies, and other coordinated groups. It is designed for matrix organizations in which composition, membership, reporting, authority, accountability, funding, and work allocation form independent graphs.
 
-CMM is an implementation of the [Vercy Meta-Universe](https://github.com/ver-cy/meta-universe) Meta-Model Architecture Standard (MMAS). The canonical namespace is `collective`; the current release is `0.1.0`.
+CMM is an implementation of the [Vercy Meta-Universe](https://github.com/ver-cy/meta-universe) Meta-Model Architecture Standard (MMAS). The canonical namespace is `collective`; the current release is `0.2.0`.
 
 ## Scope
 
@@ -24,10 +24,11 @@ It deliberately does not define people, legal entities, products, projects, acco
 3. Read the normative [Collective Meta-Model Specification](docs/Collective-Meta-Model.md).
 4. Inspect the machine-readable [MUIF model](collective.muif.json) and [instance schema](schemas/collective-instance.schema.json).
 5. Run the checks described in [Validation](docs/Validation.md).
+6. Review the [0.2.0 independent review record](docs/Independent-Review-0.2.0.md) and [0.1→0.2 migration guide](docs/Migration-0.1-to-0.2.md).
 
 ## Status
 
-Version `0.1.0` is a Working Draft. It self-declares MUC 2.0 conformity and MMAS A3 maturity. V0-V2 machine checks and a documented V3 constitutional assessment are included; A4 is not claimed until the reference validation suite and an independent review are published.
+Version `0.2.0` is a Working Draft. It self-assesses alignment with MUC 2.0 and declares MMAS A3 maturity; independent certification is not claimed. V0-V2 machine checks and a documented V3 constitutional assessment are included; A4 is not claimed until the reference validation suite certifies every applicable ATP level.
 
 ## License
 

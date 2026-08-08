@@ -1,15 +1,15 @@
 # Validation and Conformance
 
 **Document Class:** Normative  
-**Version:** 0.1.0  
+**Version:** 0.2.0
 **Status:** Working Draft
 
 ## Declared position
 
 | Axis | Claim | Evidence |
 |---|---|---|
-| MUC | 2.0 self-declared conformant | Specification invariants and V3 assessment |
-| MMAS | A3 Extensible | package topology, mappings, schemas, manifests, source register |
+| MUC | 2.0 self-assessed alignment; not certified | Specification invariants and V3 assessment |
+| MMAS | A3 Extensible (self-declared) | package topology, imports, mappings, schemas, manifests, source register |
 | MUIF | 1.0 | `collective.muif.json` validates against the Vercy schemas |
 | Validation | V2 | V0-V2 automated; V3 documented self-assessment is not claimed as a passed ATP level |
 | MUFP | not claimed | federation projections are designed but no transport implementation is certified |
@@ -24,7 +24,7 @@ Run:
 node tools/validate.mjs
 ```
 
-The command checks JSON syntax, required MUIF fields, CSN grammar, namespace declaration, identifier uniqueness, internal reference resolution, semantic fingerprint, instance-schema examples, and repository walk coverage.
+The command checks JSON syntax, required MUIF fields, CSN grammar, namespace declaration, identifier uniqueness, internal reference resolution, semantic fingerprint, example reference integrity and temporal ordering, and schema/example collection coverage. Full MUIF and instance JSON Schema validation runs in CI with AJV; repository walk coverage is provided by the package manifest and remains a future validator enhancement.
 
 ## Constitutional assessment
 
@@ -39,4 +39,4 @@ This is self-assessment evidence, not independent certification.
 
 ## Compatibility
 
-`0.1.0` is the first public version. It has no predecessor. The next release SHALL classify compatibility and publish migration guidance for any breaking semantic change.
+`0.2.0` is a pre-1.0 consistency release. Its breaking field migrations are documented in `docs/Migration-0.1-to-0.2.md`; unchanged CSNs and stable identifiers retain their meaning.

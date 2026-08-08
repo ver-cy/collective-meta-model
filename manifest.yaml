@@ -2,13 +2,13 @@ model:
   id: urn:vercy:metamodel:collective
   csn: collective.metaModel
   name: Collective Meta-Model
-  version: 0.1.0
+  version: 0.2.0
   status: working-draft
   owner: ver-cy
   license: Apache-2.0
   canonical_language: en
   namespace: collective
-  compatibility: first-public-version
+  compatibility: breaking-pre-1.0-with-migration
   muif: collective.muif.json
 
 standards:
@@ -17,7 +17,7 @@ standards:
   muif: "1.0"
 
 conformance:
-  muc: self-declared-conformant
+  muc: self-assessed-aligned-working-draft
   mmas: A3
   validation: V2
   mufp: not-claimed

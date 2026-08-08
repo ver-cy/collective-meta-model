@@ -1,15 +1,16 @@
 {
-  "schemaVersion": "0.1.0",
-  "context": { "id": "ctx:acme:operating-model", "universe": "urn:example:acme", "organization": "party:acme", "scenario": "current", "purpose": "Operating model coordination" },
+  "schemaVersion": "0.2.0",
+  "context": { "id": "ctx:acme:operating-model", "universe": "urn:example:acme", "namespace": "collective", "organization": "party:acme", "scenario": "current", "purpose": "Operating model coordination" },
   "parties": [
-    { "id": "party:acme", "partyType": "organization", "displayName": "ACME", "externalCsn": "organization.organization", "provenance": { "owner": "party:acme", "source": "corporate-registry" } },
-    { "id": "party:alex", "partyType": "person", "displayName": "Alex", "externalCsn": "person.person", "provenance": { "owner": "party:alex", "source": "identity-master" } },
-    { "id": "party:sam", "partyType": "person", "displayName": "Sam", "externalCsn": "person.person", "provenance": { "owner": "party:sam", "source": "identity-master" } }
+    { "id": "party:acme", "partyType": "organization", "displayName": "ACME", "externalCsn": "organization.organization", "masterRef": "party:acme", "provenance": { "owner": "party:acme", "source": "corporate-registry" } },
+    { "id": "party:alex", "partyType": "person", "displayName": "Alex", "externalCsn": "person.person", "masterRef": "party:alex", "provenance": { "owner": "party:alex", "source": "identity-master" } },
+    { "id": "party:sam", "partyType": "person", "displayName": "Sam", "externalCsn": "person.person", "masterRef": "party:sam", "provenance": { "owner": "party:sam", "source": "identity-master" } },
+    { "id": "party:taylor", "partyType": "person", "displayName": "Taylor", "externalCsn": "person.person", "masterRef": "party:taylor", "provenance": { "owner": "party:taylor", "source": "identity-master" } }
   ],
   "collectives": [
-    { "id": "collective:engineering", "displayName": "Engineering", "kind": "organizationalUnit", "purpose": "Sustain engineering capability", "lifecycleState": "Active", "validFrom": "2025-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "operating-model" } },
-    { "id": "collective:payments", "displayName": "Payments Product Team", "kind": "productTeam", "purpose": "Improve payment outcomes", "lifecycleState": "Active", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "product-portfolio" } },
-    { "id": "collective:checkout-migration", "displayName": "Checkout Migration", "kind": "projectTeam", "purpose": "Migrate checkout safely", "lifecycleState": "Active", "validFrom": "2026-06-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "program-portfolio" } }
+    { "id": "collective:engineering", "displayName": "Engineering", "kind": "organizationalUnit", "purpose": "Sustain engineering capability", "lifecycleState": "Active", "masterRef": "party:acme", "validFrom": "2025-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "operating-model" } },
+    { "id": "collective:payments", "displayName": "Payments Product Team", "kind": "productTeam", "purpose": "Improve payment outcomes", "lifecycleState": "Active", "masterRef": "party:acme", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "product-portfolio" } },
+    { "id": "collective:checkout-migration", "displayName": "Checkout Migration", "kind": "projectTeam", "purpose": "Migrate checkout safely", "lifecycleState": "Active", "masterRef": "party:acme", "validFrom": "2026-06-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "program-portfolio" } }
   ],
   "dimensions": [
     { "id": "dimension:function", "kind": "function", "provenance": { "owner": "party:acme", "source": "operating-model" } },
@@ -17,39 +18,67 @@
     { "id": "dimension:program", "kind": "program", "provenance": { "owner": "party:acme", "source": "operating-model" } }
   ],
   "scopes": [
-    { "id": "scope:payments", "scopeKind": "product", "subjects": [{ "targetId": "collective:payments", "targetType": "Collective", "targetCsn": "collective.collective" }], "contextRef": "ctx:acme:operating-model", "provenance": { "owner": "party:acme", "source": "governance-model" } }
+    { "id": "scope:payments", "scopeKind": "product", "subjects": [{ "targetId": "collective:payments", "targetType": "Collective", "targetCsn": "collective.collective" }], "contextRef": "ctx:acme:operating-model", "provenance": { "owner": "party:acme", "source": "governance-model" } },
+    { "id": "scope:engineering", "scopeKind": "function", "subjects": [{ "targetId": "collective:engineering", "targetType": "Collective", "targetCsn": "collective.collective" }], "contextRef": "ctx:acme:operating-model", "provenance": { "owner": "party:acme", "source": "governance-model" } }
   ],
   "memberships": [
     { "id": "membership:alex:engineering", "partyRef": "party:alex", "collectiveRef": "collective:engineering", "membershipKind": "home", "status": "active", "validFrom": "2025-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "people-operations" } },
     { "id": "membership:alex:payments", "partyRef": "party:alex", "collectiveRef": "collective:payments", "membershipKind": "core", "status": "active", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "collective:payments", "source": "team-charter" } },
-    { "id": "membership:alex:migration", "partyRef": "party:alex", "collectiveRef": "collective:checkout-migration", "membershipKind": "contributor", "status": "active", "validFrom": "2026-06-01T00:00:00Z", "provenance": { "owner": "collective:checkout-migration", "source": "project-charter" } }
+    { "id": "membership:alex:migration", "partyRef": "party:alex", "collectiveRef": "collective:checkout-migration", "membershipKind": "contributor", "status": "active", "validFrom": "2026-06-01T00:00:00Z", "provenance": { "owner": "collective:checkout-migration", "source": "project-charter" } },
+    { "id": "membership:sam:payments", "partyRef": "party:sam", "collectiveRef": "collective:payments", "membershipKind": "lead", "status": "active", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "collective:payments", "source": "team-charter" } },
+    { "id": "membership:taylor:engineering", "partyRef": "party:taylor", "collectiveRef": "collective:engineering", "membershipKind": "lead", "status": "active", "validFrom": "2025-01-01T00:00:00Z", "provenance": { "owner": "collective:engineering", "source": "operating-model" } }
   ],
   "roleDefinitions": [
     { "id": "role:engineer", "displayName": "Engineer", "expectedContribution": "Design and deliver reliable software", "provenance": { "owner": "party:acme", "source": "role-catalogue" } },
-    { "id": "role:product-lead", "displayName": "Product Lead", "expectedContribution": "Lead product discovery and outcome decisions", "provenance": { "owner": "party:acme", "source": "role-catalogue" } }
+    { "id": "role:product-lead", "displayName": "Product Lead", "expectedContribution": "Lead product discovery and outcome decisions", "provenance": { "owner": "party:acme", "source": "role-catalogue" } },
+    { "id": "role:engineering-lead", "displayName": "Engineering Lead", "expectedContribution": "Sustain capability and professional development", "provenance": { "owner": "party:acme", "source": "role-catalogue" } }
   ],
   "positions": [
-    { "id": "position:payments:product-lead", "collectiveRef": "collective:payments", "roleDefinitionRef": "role:product-lead", "incumbentLimit": 1, "provenance": { "owner": "collective:payments", "source": "team-design" } }
+    { "id": "position:payments:product-lead", "collectiveRef": "collective:payments", "roleDefinitionRefs": ["role:product-lead"], "incumbentLimit": 1, "provenance": { "owner": "collective:payments", "source": "team-design" } },
+    { "id": "position:engineering:lead", "collectiveRef": "collective:engineering", "roleDefinitionRefs": ["role:engineering-lead", "role:engineer"], "incumbentLimit": 1, "provenance": { "owner": "collective:engineering", "source": "operating-model" } }
   ],
   "assignments": [
-    { "id": "assignment:alex:engineer", "partyRef": "party:alex", "roleDefinitionRef": "role:engineer", "membershipRef": "membership:alex:engineering", "validFrom": "2025-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "people-operations" } },
-    { "id": "assignment:sam:payments-lead", "partyRef": "party:sam", "roleDefinitionRef": "role:product-lead", "positionRef": "position:payments:product-lead", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "collective:payments", "source": "team-charter" } }
+    { "id": "assignment:alex:engineer", "partyRef": "party:alex", "roleDefinitionRef": "role:engineer", "membershipRef": "membership:alex:engineering", "collectiveRef": "collective:engineering", "validFrom": "2025-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "people-operations" } },
+    { "id": "assignment:alex:payments-engineer", "partyRef": "party:alex", "roleDefinitionRef": "role:engineer", "membershipRef": "membership:alex:payments", "collectiveRef": "collective:payments", "workSubjectRef": "work-subject:payments-product", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "collective:payments", "source": "team-charter" } },
+    { "id": "assignment:alex:migration-engineer", "partyRef": "party:alex", "roleDefinitionRef": "role:engineer", "membershipRef": "membership:alex:migration", "collectiveRef": "collective:checkout-migration", "workSubjectRef": "work-subject:checkout-migration-project", "validFrom": "2026-06-01T00:00:00Z", "provenance": { "owner": "collective:checkout-migration", "source": "project-charter" } },
+    { "id": "assignment:sam:payments-lead", "partyRef": "party:sam", "roleDefinitionRef": "role:product-lead", "positionRef": "position:payments:product-lead", "membershipRef": "membership:sam:payments", "workSubjectRef": "work-subject:payments-product", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "collective:payments", "source": "team-charter" } },
+    { "id": "assignment:taylor:engineering-lead", "partyRef": "party:taylor", "roleDefinitionRef": "role:engineering-lead", "positionRef": "position:engineering:lead", "membershipRef": "membership:taylor:engineering", "validFrom": "2025-01-01T00:00:00Z", "provenance": { "owner": "collective:engineering", "source": "operating-model" } }
+  ],
+  "reportingLines": [
+    { "id": "reporting:alex:functional", "reporterRef": { "targetId": "party:alex", "targetType": "Party", "targetCsn": "collective.party" }, "reportingRecipientRef": { "targetId": "party:taylor", "targetType": "Party", "targetCsn": "collective.party" }, "reportingChannel": "functional", "scopeRef": "scope:engineering", "validFrom": "2025-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "operating-model" } },
+    { "id": "reporting:alex:product", "reporterRef": { "targetId": "party:alex", "targetType": "Party", "targetCsn": "collective.party" }, "reportingRecipientRef": { "targetId": "party:sam", "targetType": "Party", "targetCsn": "collective.party" }, "reportingChannel": "product-delivery", "scopeRef": "scope:payments", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "collective:payments", "source": "team-charter" } }
+  ],
+  "mandates": [
+    { "id": "mandate:sam:payments-lead", "issuerRef": { "targetId": "party:acme", "targetType": "Party", "targetCsn": "collective.party" }, "recipientRef": { "targetId": "party:sam", "targetType": "Party", "targetCsn": "collective.party" }, "scopeRef": "scope:payments", "revocationRule": "Revocable by the issuer with a recorded MandateRevoked event", "revocationState": "active", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "team-charter" } }
+  ],
+  "decisionDomains": [
+    { "id": "decision-domain:payments-product-priority", "displayName": "Payments product priority", "scopeRef": "scope:payments", "provenance": { "owner": "party:acme", "source": "governance-model" } }
   ],
   "authorityGrants": [
-    { "id": "authority:sam:payments-priority", "grantorRef": "party:acme", "granteeRef": "party:sam", "decisionDomain": "payments.productPriority", "rightKind": "decide", "scopeRef": "scope:payments", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "delegation-register" } }
+    { "id": "authority:sam:payments-priority", "grantorRef": { "targetId": "party:acme", "targetType": "Party", "targetCsn": "collective.party" }, "granteeRef": { "targetId": "party:sam", "targetType": "Party", "targetCsn": "collective.party" }, "decisionDomainRef": "decision-domain:payments-product-priority", "rightKind": "decide", "scopeRef": "scope:payments", "mandateRef": "mandate:sam:payments-lead", "revocationState": "active", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "delegation-register" } }
   ],
   "accountabilities": [
-    { "id": "accountability:payments:conversion", "accountableRef": "party:sam", "targetRef": { "targetId": "objective:payments-conversion", "targetType": "Objective", "targetCsn": "collective.objective" }, "scopeRef": "scope:payments", "acceptanceState": "accepted", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "collective:payments", "source": "team-charter" } }
+    { "id": "accountability:payments:conversion", "accountableRef": { "targetId": "party:sam", "targetType": "Party", "targetCsn": "collective.party" }, "targetRef": { "targetId": "objective:payments-conversion", "targetType": "Objective", "targetCsn": "collective.objective" }, "scopeRef": "scope:payments", "acceptanceState": "accepted", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "collective:payments", "source": "team-charter" } }
+  ],
+  "workSubjects": [
+    { "id": "work-subject:payments-product", "subjectType": "product", "externalCsn": "product.product", "ownerRef": { "targetId": "collective:payments", "targetType": "Collective", "targetCsn": "collective.collective" }, "provenance": { "owner": "collective:payments", "source": "product-portfolio" } },
+    { "id": "work-subject:checkout-migration-project", "subjectType": "project", "externalCsn": "project.project", "ownerRef": { "targetId": "collective:checkout-migration", "targetType": "Collective", "targetCsn": "collective.collective" }, "provenance": { "owner": "collective:checkout-migration", "source": "program-portfolio" } }
+  ],
+  "resources": [
+    { "id": "resource:alex-capacity", "resourceKind": "personCapacity", "ownerRef": { "targetId": "party:alex", "targetType": "Party", "targetCsn": "collective.party" }, "provenance": { "owner": "party:acme", "source": "capacity-register" } }
   ],
   "allocations": [
-    { "id": "allocation:alex:payments", "resourceRef": "party:alex", "recipientRef": { "targetId": "collective:payments", "targetType": "Collective", "targetCsn": "collective.collective" }, "quantity": 0.6, "unit": "fte", "purpose": "Product delivery", "validFrom": "2026-07-01T00:00:00Z", "provenance": { "owner": "collective:engineering", "source": "capacity-plan" } },
-    { "id": "allocation:alex:migration", "resourceRef": "party:alex", "recipientRef": { "targetId": "collective:checkout-migration", "targetType": "Collective", "targetCsn": "collective.collective" }, "quantity": 0.4, "unit": "fte", "purpose": "Migration delivery", "validFrom": "2026-07-01T00:00:00Z", "provenance": { "owner": "collective:engineering", "source": "capacity-plan" } }
+    { "id": "allocation:alex:payments", "resourceRef": "resource:alex-capacity", "recipientRef": { "targetId": "collective:payments", "targetType": "Collective", "targetCsn": "collective.collective" }, "quantity": 0.6, "unit": "fte", "purpose": "Product delivery", "validFrom": "2026-07-01T00:00:00Z", "provenance": { "owner": "collective:engineering", "source": "capacity-plan" } },
+    { "id": "allocation:alex:migration", "resourceRef": "resource:alex-capacity", "recipientRef": { "targetId": "collective:checkout-migration", "targetType": "Collective", "targetCsn": "collective.collective" }, "quantity": 0.4, "unit": "fte", "purpose": "Migration delivery", "validFrom": "2026-07-01T00:00:00Z", "provenance": { "owner": "collective:engineering", "source": "capacity-plan" } }
+  ],
+  "objectives": [
+    { "id": "objective:payments-conversion", "desiredOutcome": "Increase successful checkout conversion", "ownerRef": { "targetId": "collective:payments", "targetType": "Collective", "targetCsn": "collective.collective" }, "status": "active", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "collective:payments", "source": "product-strategy" } }
   ],
   "relationships": [
-    { "id": "rel:engineering:function", "kind": "participatesInDimension", "source": "collective:engineering", "target": "dimension:function", "validFrom": "2025-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "operating-model" } },
-    { "id": "rel:payments:product", "kind": "participatesInDimension", "source": "collective:payments", "target": "dimension:product", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "operating-model" } },
-    { "id": "rel:migration:program", "kind": "participatesInDimension", "source": "collective:checkout-migration", "target": "dimension:program", "validFrom": "2026-06-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "operating-model" } },
-    { "id": "rel:payments:migration", "kind": "coordinatesWith", "source": "collective:payments", "target": "collective:checkout-migration", "validFrom": "2026-06-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "program-charter" } },
-    { "id": "rel:authority:accountability", "kind": "supportsAccountability", "source": "authority:sam:payments-priority", "target": "accountability:payments:conversion", "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "governance-model" } }
+    { "id": "rel:engineering:function", "kind": "participatesInDimension", "source": { "targetId": "collective:engineering", "targetType": "Collective", "targetCsn": "collective.collective" }, "target": { "targetId": "dimension:function", "targetType": "StructureDimension", "targetCsn": "collective.structureDimension" }, "validFrom": "2025-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "operating-model" } },
+    { "id": "rel:payments:product", "kind": "participatesInDimension", "source": { "targetId": "collective:payments", "targetType": "Collective", "targetCsn": "collective.collective" }, "target": { "targetId": "dimension:product", "targetType": "StructureDimension", "targetCsn": "collective.structureDimension" }, "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "operating-model" } },
+    { "id": "rel:migration:program", "kind": "participatesInDimension", "source": { "targetId": "collective:checkout-migration", "targetType": "Collective", "targetCsn": "collective.collective" }, "target": { "targetId": "dimension:program", "targetType": "StructureDimension", "targetCsn": "collective.structureDimension" }, "validFrom": "2026-06-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "operating-model" } },
+    { "id": "rel:payments:migration", "kind": "coordinatesWith", "source": { "targetId": "collective:payments", "targetType": "Collective", "targetCsn": "collective.collective" }, "target": { "targetId": "collective:checkout-migration", "targetType": "Collective", "targetCsn": "collective.collective" }, "validFrom": "2026-06-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "program-charter" } },
+    { "id": "rel:authority:accountability", "kind": "supportsAccountability", "source": { "targetId": "authority:sam:payments-priority", "targetType": "AuthorityGrant", "targetCsn": "collective.authorityGrant" }, "target": { "targetId": "accountability:payments:conversion", "targetType": "Accountability", "targetCsn": "collective.accountability" }, "validFrom": "2026-01-01T00:00:00Z", "provenance": { "owner": "party:acme", "source": "governance-model" } }
   ]
 }

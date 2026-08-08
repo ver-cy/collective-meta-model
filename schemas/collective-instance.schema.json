@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ver.cy/schemas/collective/0.1.0/collective-instance.schema.json",
+  "$id": "https://ver.cy/schemas/collective/0.2.0/collective-instance.schema.json",
   "title": "Collective Meta-Model Instance",
   "type": "object",
   "required": ["schemaVersion", "context", "parties", "collectives"],
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": { "const": "0.1.0" },
+    "schemaVersion": { "const": "0.2.0" },
     "context": { "$ref": "#/$defs/context" },
     "parties": { "type": "array", "items": { "$ref": "#/$defs/party" } },
     "collectives": { "type": "array", "items": { "$ref": "#/$defs/collective" } },
@@ -16,92 +16,169 @@
     "roleDefinitions": { "type": "array", "items": { "$ref": "#/$defs/roleDefinition" } },
     "positions": { "type": "array", "items": { "$ref": "#/$defs/position" } },
     "assignments": { "type": "array", "items": { "$ref": "#/$defs/assignment" } },
+    "mandates": { "type": "array", "items": { "$ref": "#/$defs/mandate" } },
+    "decisionDomains": { "type": "array", "items": { "$ref": "#/$defs/decisionDomain" } },
     "authorityGrants": { "type": "array", "items": { "$ref": "#/$defs/authorityGrant" } },
     "accountabilities": { "type": "array", "items": { "$ref": "#/$defs/accountability" } },
+    "reportingLines": { "type": "array", "items": { "$ref": "#/$defs/reportingLine" } },
+    "policies": { "type": "array", "items": { "$ref": "#/$defs/policy" } },
+    "constraints": { "type": "array", "items": { "$ref": "#/$defs/constraint" } },
+    "workSubjects": { "type": "array", "items": { "$ref": "#/$defs/workSubject" } },
+    "workItems": { "type": "array", "items": { "$ref": "#/$defs/workItem" } },
+    "commitments": { "type": "array", "items": { "$ref": "#/$defs/commitment" } },
+    "dependencies": { "type": "array", "items": { "$ref": "#/$defs/dependency" } },
+    "resources": { "type": "array", "items": { "$ref": "#/$defs/resource" } },
+    "capacities": { "type": "array", "items": { "$ref": "#/$defs/capacity" } },
     "allocations": { "type": "array", "items": { "$ref": "#/$defs/allocation" } },
+    "budgets": { "type": "array", "items": { "$ref": "#/$defs/budget" } },
+    "costObjects": { "type": "array", "items": { "$ref": "#/$defs/costObject" } },
+    "fundingAllocations": { "type": "array", "items": { "$ref": "#/$defs/fundingAllocation" } },
+    "objectives": { "type": "array", "items": { "$ref": "#/$defs/objective" } },
+    "metrics": { "type": "array", "items": { "$ref": "#/$defs/metric" } },
+    "measurements": { "type": "array", "items": { "$ref": "#/$defs/measurement" } },
+    "lineages": { "type": "array", "items": { "$ref": "#/$defs/lineage" } },
+    "conflicts": { "type": "array", "items": { "$ref": "#/$defs/conflict" } },
     "relationships": { "type": "array", "items": { "$ref": "#/$defs/relationship" } }
   },
   "$defs": {
     "id": { "type": "string", "minLength": 1 },
+    "csn": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9]*(\\.[a-z][a-zA-Z0-9]*)*$" },
+    "instant": { "type": "string", "format": "date-time" },
     "typedReference": {
       "type": "object", "required": ["targetId", "targetType"], "additionalProperties": false,
-      "properties": { "targetId": { "$ref": "#/$defs/id" }, "targetType": { "type": "string", "minLength": 1 }, "targetCsn": { "type": "string" } }
+      "properties": { "targetId": { "$ref": "#/$defs/id" }, "targetType": { "type": "string", "minLength": 1 }, "targetCsn": { "$ref": "#/$defs/csn" } }
     },
-    "instant": { "type": "string", "format": "date-time" },
     "provenance": {
       "type": "object", "required": ["owner", "source"], "additionalProperties": false,
-      "properties": { "owner": { "$ref": "#/$defs/id" }, "source": { "type": "string", "minLength": 1 }, "assertedAt": { "$ref": "#/$defs/instant" } }
+      "properties": { "owner": { "$ref": "#/$defs/id" }, "source": { "type": "string", "minLength": 1 }, "assertedAt": { "$ref": "#/$defs/instant" }, "derivedFrom": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true } }
     },
     "context": {
-      "type": "object", "required": ["id", "universe", "purpose"], "additionalProperties": false,
-      "properties": { "id": { "$ref": "#/$defs/id" }, "universe": { "$ref": "#/$defs/id" }, "organization": { "$ref": "#/$defs/id" }, "scenario": { "type": "string" }, "purpose": { "type": "string", "minLength": 1 } }
+      "type": "object", "required": ["id", "universe", "namespace", "purpose"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "universe": { "$ref": "#/$defs/id" }, "namespace": { "$ref": "#/$defs/csn" }, "organization": { "$ref": "#/$defs/id" }, "effectiveAt": { "$ref": "#/$defs/instant" }, "scenario": { "type": "string" }, "purpose": { "type": "string", "minLength": 1 } }
     },
     "party": {
-      "type": "object", "required": ["id", "partyType", "provenance"], "additionalProperties": false,
-      "properties": { "id": { "$ref": "#/$defs/id" }, "partyType": { "enum": ["person", "organization", "agent", "other"] }, "displayName": { "type": "string" }, "externalCsn": { "type": "string" }, "provenance": { "$ref": "#/$defs/provenance" } }
+      "type": "object", "required": ["id", "partyType", "masterRef", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "partyType": { "enum": ["person", "organization", "agent", "other"] }, "displayName": { "type": "string" }, "externalCsn": { "$ref": "#/$defs/csn" }, "masterRef": { "$ref": "#/$defs/id" }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "collective": {
-      "type": "object", "required": ["id", "kind", "purpose", "lifecycleState", "validFrom", "provenance"], "additionalProperties": false,
-      "properties": {
-        "id": { "$ref": "#/$defs/id" }, "displayName": { "type": "string" },
-        "kind": { "enum": ["organizationalUnit", "projectTeam", "productTeam", "communityOfPractice", "governanceBody", "externalPartnerGroup", "temporaryTaskForce"] },
-        "purpose": { "type": "string", "minLength": 1 }, "lifecycleState": { "enum": ["Draft", "Active", "Suspended", "Deprecated", "Retired", "Terminated"] },
-        "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" }
-      }
+      "type": "object", "required": ["id", "kind", "purpose", "lifecycleState", "masterRef", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "displayName": { "type": "string" }, "kind": { "anyOf": [{ "enum": ["organizationalUnit", "projectTeam", "productTeam", "communityOfPractice", "governanceBody", "externalPartnerGroup", "temporaryTaskForce"] }, { "$ref": "#/$defs/csn" }] }, "purpose": { "type": "string", "minLength": 1 }, "lifecycleState": { "enum": ["Draft", "Active", "Suspended", "Deprecated", "Retired", "Terminated"] }, "masterRef": { "$ref": "#/$defs/id" }, "contextRef": { "$ref": "#/$defs/id" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "dimension": {
       "type": "object", "required": ["id", "kind", "provenance"], "additionalProperties": false,
-      "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "enum": ["function", "geography", "product", "program", "customer", "legal", "community", "other"] }, "provenance": { "$ref": "#/$defs/provenance" } }
+      "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "anyOf": [{ "enum": ["function", "geography", "product", "program", "customer", "legal", "community", "other"] }, { "$ref": "#/$defs/csn" }] }, "contextRef": { "$ref": "#/$defs/id" }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "scope": {
       "type": "object", "required": ["id", "scopeKind", "subjects", "contextRef", "provenance"], "additionalProperties": false,
-      "properties": { "id": { "$ref": "#/$defs/id" }, "scopeKind": { "type": "string" }, "subjects": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/typedReference" } }, "contextRef": { "$ref": "#/$defs/id" }, "inclusionExpression": { "type": "string" }, "exclusionExpression": { "type": "string" }, "provenance": { "$ref": "#/$defs/provenance" } }
-    },
-    "temporalAssociation": {
-      "type": "object", "required": ["id", "validFrom", "provenance"],
-      "properties": { "id": { "$ref": "#/$defs/id" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+      "properties": { "id": { "$ref": "#/$defs/id" }, "scopeKind": { "type": "string", "minLength": 1 }, "subjects": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/typedReference" } }, "contextRef": { "$ref": "#/$defs/id" }, "jurisdictionRef": { "$ref": "#/$defs/typedReference" }, "inclusionExpression": { "type": "string" }, "exclusionExpression": { "type": "string" }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "membership": {
-      "allOf": [
-        { "$ref": "#/$defs/temporalAssociation" },
-        { "type": "object", "required": ["partyRef", "collectiveRef", "membershipKind", "status"], "properties": { "partyRef": { "$ref": "#/$defs/id" }, "collectiveRef": { "$ref": "#/$defs/id" }, "membershipKind": { "type": "string" }, "status": { "enum": ["proposed", "active", "suspended", "ended"] } } }
-      ]
+      "type": "object", "required": ["id", "partyRef", "collectiveRef", "membershipKind", "status", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "partyRef": { "$ref": "#/$defs/id" }, "collectiveRef": { "$ref": "#/$defs/id" }, "membershipKind": { "type": "string", "minLength": 1 }, "status": { "enum": ["proposed", "active", "suspended", "ended"] }, "contextRef": { "$ref": "#/$defs/id" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "roleDefinition": {
-      "type": "object", "required": ["id", "displayName", "expectedContribution", "provenance"],
-      "properties": { "id": { "$ref": "#/$defs/id" }, "displayName": { "type": "string" }, "expectedContribution": { "type": "string" }, "provenance": { "$ref": "#/$defs/provenance" } }
+      "type": "object", "required": ["id", "displayName", "expectedContribution", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "displayName": { "type": "string", "minLength": 1 }, "expectedContribution": { "type": "string", "minLength": 1 }, "scopeRef": { "$ref": "#/$defs/id" }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "position": {
-      "type": "object", "required": ["id", "collectiveRef", "roleDefinitionRef", "provenance"],
-      "properties": { "id": { "$ref": "#/$defs/id" }, "collectiveRef": { "$ref": "#/$defs/id" }, "roleDefinitionRef": { "$ref": "#/$defs/id" }, "incumbentLimit": { "type": "integer", "minimum": 1 }, "provenance": { "$ref": "#/$defs/provenance" } }
+      "type": "object", "required": ["id", "collectiveRef", "roleDefinitionRefs", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "collectiveRef": { "$ref": "#/$defs/id" }, "roleDefinitionRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "incumbentLimit": { "type": "integer", "minimum": 1 }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "assignment": {
-      "allOf": [
-        { "$ref": "#/$defs/temporalAssociation" },
-        { "type": "object", "required": ["partyRef", "roleDefinitionRef"], "properties": { "partyRef": { "$ref": "#/$defs/id" }, "roleDefinitionRef": { "$ref": "#/$defs/id" }, "positionRef": { "$ref": "#/$defs/id" }, "membershipRef": { "$ref": "#/$defs/id" } } }
-      ]
+      "type": "object", "required": ["id", "partyRef", "roleDefinitionRef", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "partyRef": { "$ref": "#/$defs/id" }, "roleDefinitionRef": { "$ref": "#/$defs/id" }, "positionRef": { "$ref": "#/$defs/id" }, "membershipRef": { "$ref": "#/$defs/id" }, "collectiveRef": { "$ref": "#/$defs/id" }, "workSubjectRef": { "$ref": "#/$defs/id" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "mandate": {
+      "type": "object", "required": ["id", "issuerRef", "recipientRef", "scopeRef", "revocationRule", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "issuerRef": { "$ref": "#/$defs/typedReference" }, "recipientRef": { "$ref": "#/$defs/typedReference" }, "scopeRef": { "$ref": "#/$defs/id" }, "revocationRule": { "type": "string", "minLength": 1 }, "revocationState": { "enum": ["active", "revoked", "expired"] }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "decisionDomain": {
+      "type": "object", "required": ["id", "scopeRef", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "displayName": { "type": "string" }, "scopeRef": { "$ref": "#/$defs/id" }, "contextRef": { "$ref": "#/$defs/id" }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "authorityGrant": {
-      "allOf": [
-        { "$ref": "#/$defs/temporalAssociation" },
-        { "type": "object", "required": ["grantorRef", "granteeRef", "decisionDomain", "rightKind", "scopeRef"], "properties": { "grantorRef": { "$ref": "#/$defs/id" }, "granteeRef": { "$ref": "#/$defs/id" }, "decisionDomain": { "type": "string" }, "rightKind": { "enum": ["propose", "decide", "approve", "veto", "delegate", "allocate"] }, "scopeRef": { "$ref": "#/$defs/id" }, "mandateRef": { "$ref": "#/$defs/id" }, "parentGrantRef": { "$ref": "#/$defs/id" } } }
-      ]
+      "type": "object", "required": ["id", "grantorRef", "granteeRef", "decisionDomainRef", "rightKind", "scopeRef", "revocationState", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "grantorRef": { "$ref": "#/$defs/typedReference" }, "granteeRef": { "$ref": "#/$defs/typedReference" }, "decisionDomainRef": { "$ref": "#/$defs/id" }, "rightKind": { "anyOf": [{ "enum": ["propose", "decide", "approve", "veto", "delegate", "allocate"] }, { "$ref": "#/$defs/csn" }] }, "scopeRef": { "$ref": "#/$defs/id" }, "constraints": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }, "mandateRef": { "$ref": "#/$defs/id" }, "parentGrantRef": { "$ref": "#/$defs/id" }, "revocationState": { "enum": ["active", "revoked", "expired"] }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "accountability": {
-      "allOf": [
-        { "$ref": "#/$defs/temporalAssociation" },
-        { "type": "object", "required": ["accountableRef", "targetRef", "scopeRef", "acceptanceState"], "properties": { "accountableRef": { "$ref": "#/$defs/id" }, "targetRef": { "$ref": "#/$defs/typedReference" }, "scopeRef": { "$ref": "#/$defs/id" }, "acceptanceState": { "enum": ["proposed", "accepted", "declined", "ended"] } } }
-      ]
+      "type": "object", "required": ["id", "accountableRef", "targetRef", "scopeRef", "acceptanceState", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "accountableRef": { "$ref": "#/$defs/typedReference" }, "targetRef": { "$ref": "#/$defs/typedReference" }, "scopeRef": { "$ref": "#/$defs/id" }, "acceptanceState": { "enum": ["proposed", "accepted", "declined", "ended"] }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "reportingLine": {
+      "type": "object", "required": ["id", "reporterRef", "reportingRecipientRef", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "reporterRef": { "$ref": "#/$defs/typedReference" }, "reportingRecipientRef": { "$ref": "#/$defs/typedReference" }, "reportingChannel": { "type": "string" }, "scopeRef": { "$ref": "#/$defs/id" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "policy": {
+      "type": "object", "required": ["id", "ownerRef", "scopeRef", "lifecycleState", "enforcementMode", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "ownerRef": { "$ref": "#/$defs/typedReference" }, "scopeRef": { "$ref": "#/$defs/id" }, "lifecycleState": { "enum": ["Draft", "Active", "Suspended", "Deprecated", "Retired", "Terminated"] }, "precedence": { "type": "integer" }, "enforcementMode": { "enum": ["advisory", "detective", "preventive"] }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "constraint": {
+      "type": "object", "required": ["id", "expressionLanguage", "expression", "policyRef", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "expressionLanguage": { "type": "string", "minLength": 1 }, "expression": { "type": "string", "minLength": 1 }, "policyRef": { "$ref": "#/$defs/id" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "workSubject": {
+      "type": "object", "required": ["id", "subjectType", "ownerRef", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "subjectType": { "type": "string", "minLength": 1 }, "externalCsn": { "$ref": "#/$defs/csn" }, "ownerRef": { "$ref": "#/$defs/typedReference" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "workItem": {
+      "type": "object", "required": ["id", "purpose", "status", "ownerRef", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "workSubjectRef": { "$ref": "#/$defs/id" }, "purpose": { "type": "string", "minLength": 1 }, "status": { "type": "string", "minLength": 1 }, "ownerRef": { "$ref": "#/$defs/typedReference" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "commitment": {
+      "type": "object", "required": ["id", "promisorRef", "beneficiaryRef", "outcome", "acceptanceCriteria", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "promisorRef": { "$ref": "#/$defs/typedReference" }, "beneficiaryRef": { "$ref": "#/$defs/typedReference" }, "outcome": { "type": "string", "minLength": 1 }, "acceptanceCriteria": { "type": "string", "minLength": 1 }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "dependency": {
+      "type": "object", "required": ["id", "dependencySourceRef", "dependencyTargetRef", "dependencyType", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "dependencySourceRef": { "$ref": "#/$defs/typedReference" }, "dependencyTargetRef": { "$ref": "#/$defs/typedReference" }, "dependencyType": { "type": "string", "minLength": 1 }, "dependencyCondition": { "type": "string" }, "dependencyLag": { "type": "string" }, "dependencyCriticality": { "type": "string" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "resource": {
+      "type": "object", "required": ["id", "resourceKind", "ownerRef", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "resourceKind": { "type": "string", "minLength": 1 }, "ownerRef": { "$ref": "#/$defs/typedReference" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "capacity": {
+      "type": "object", "required": ["id", "resourceRef", "quantity", "unit", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "resourceRef": { "$ref": "#/$defs/id" }, "quantity": { "type": "number", "minimum": 0 }, "unit": { "type": "string", "minLength": 1 }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "allocation": {
-      "allOf": [
-        { "$ref": "#/$defs/temporalAssociation" },
-        { "type": "object", "required": ["resourceRef", "recipientRef", "quantity", "unit", "purpose"], "properties": { "resourceRef": { "$ref": "#/$defs/id" }, "recipientRef": { "$ref": "#/$defs/typedReference" }, "quantity": { "type": "number", "minimum": 0 }, "unit": { "type": "string" }, "purpose": { "type": "string" } } }
-      ]
+      "type": "object", "required": ["id", "resourceRef", "recipientRef", "quantity", "unit", "purpose", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "resourceRef": { "$ref": "#/$defs/id" }, "recipientRef": { "$ref": "#/$defs/typedReference" }, "quantity": { "type": "number", "minimum": 0 }, "unit": { "type": "string", "minLength": 1 }, "purpose": { "type": "string", "minLength": 1 }, "priority": { "type": "integer" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "budget": {
+      "type": "object", "required": ["id", "amount", "currency", "ownerRef", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "amount": { "type": "number", "minimum": 0 }, "currency": { "type": "string", "minLength": 3 }, "ownerRef": { "$ref": "#/$defs/typedReference" }, "constraints": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "costObject": {
+      "type": "object", "required": ["id", "externalCsn", "ownerRef", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "externalCsn": { "$ref": "#/$defs/csn" }, "ownerRef": { "$ref": "#/$defs/typedReference" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "fundingAllocation": {
+      "type": "object", "required": ["id", "budgetRef", "recipientRef", "amount", "currency", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "budgetRef": { "$ref": "#/$defs/id" }, "recipientRef": { "$ref": "#/$defs/typedReference" }, "amount": { "type": "number", "minimum": 0 }, "currency": { "type": "string", "minLength": 3 }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "objective": {
+      "type": "object", "required": ["id", "desiredOutcome", "ownerRef", "status", "validFrom", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "desiredOutcome": { "type": "string", "minLength": 1 }, "ownerRef": { "$ref": "#/$defs/typedReference" }, "status": { "type": "string", "minLength": 1 }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "metric": {
+      "type": "object", "required": ["id", "method", "unit", "dataAuthorityRef", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "method": { "type": "string", "minLength": 1 }, "scale": { "type": "string" }, "unit": { "type": "string", "minLength": 1 }, "direction": { "enum": ["increase", "decrease", "target", "range"] }, "dataAuthorityRef": { "$ref": "#/$defs/typedReference" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "measurement": {
+      "type": "object", "required": ["id", "metricRef", "targetRef", "value", "observedAt", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "metricRef": { "$ref": "#/$defs/id" }, "targetRef": { "$ref": "#/$defs/typedReference" }, "value": { "type": "number" }, "observedAt": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "lineage": {
+      "type": "object", "required": ["id", "subjectRef", "inputRefs", "transformation", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "subjectRef": { "$ref": "#/$defs/typedReference" }, "inputRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/typedReference" } }, "transformation": { "type": "string", "minLength": 1 }, "provenance": { "$ref": "#/$defs/provenance" } }
+    },
+    "conflict": {
+      "type": "object", "required": ["id", "subjectRef", "assertionRefs", "conflictType", "resolutionState", "detectedAt", "provenance"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/id" }, "subjectRef": { "$ref": "#/$defs/typedReference" }, "assertionRefs": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/typedReference" } }, "conflictType": { "type": "string", "minLength": 1 }, "resolutionState": { "enum": ["open", "accepted", "resolved", "superseded"] }, "detectedAt": { "$ref": "#/$defs/instant" }, "resolvedAt": { "$ref": "#/$defs/instant" }, "resolutionRef": { "$ref": "#/$defs/typedReference" }, "provenance": { "$ref": "#/$defs/provenance" } }
     },
     "relationship": {
       "type": "object", "required": ["id", "kind", "source", "target", "validFrom", "provenance"], "additionalProperties": false,
-      "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "enum": ["composedOf", "coordinatesWith", "participatesInDimension", "succeeds", "reportsTo", "dependsOn", "constrainedBy", "supportsAccountability"] }, "source": { "$ref": "#/$defs/id" }, "target": { "$ref": "#/$defs/id" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
+      "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "anyOf": [{ "enum": ["composedOf", "coordinatesWith", "participatesInDimension", "succeeds", "reportsTo", "dependsOn", "constrainedBy", "supportsAccountability"] }, { "$ref": "#/$defs/csn" }] }, "source": { "$ref": "#/$defs/typedReference" }, "target": { "$ref": "#/$defs/typedReference" }, "dependencyType": { "type": "string" }, "condition": { "type": "string" }, "lag": { "type": "string" }, "criticality": { "type": "string" }, "validFrom": { "$ref": "#/$defs/instant" }, "validTo": { "$ref": "#/$defs/instant" }, "provenance": { "$ref": "#/$defs/provenance" } }
     }
   }
 }
