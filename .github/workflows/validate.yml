@@ -18,7 +18,9 @@ jobs:
       - name: Run CMM checks
         run: node tools/validate.mjs
       - name: Fetch Vercy standard schemas
-        run: git clone --depth 1 https://github.com/ver-cy/meta-universe.git .vercy-standard
+        run: |
+          git clone https://github.com/ver-cy/meta-universe.git .vercy-standard
+          git -C .vercy-standard checkout 9cf157bfaa4092c072a1238ecf4cc784a9e53dca
       - name: Validate MUIF
         run: >-
           npx --yes ajv-cli validate --strict=false --validate-formats=false --spec=draft2020
