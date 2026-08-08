@@ -1,0 +1,27 @@
+name: Bootstrap repository
+
+on:
+  push:
+    paths:
+      - collective-meta-model-v0.1.0.zip
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Expand validated release archive
+        run: |
+          unzip -o collective-meta-model-v0.1.0.zip
+          rm collective-meta-model-v0.1.0.zip
+          rm .github/workflows/bootstrap.yml
+      - name: Publish canonical repository tree
+        run: |
+          git config user.name "Victor Bolshakov"
+          git config user.email "archivisor@gmail.com"
+          git add -A
+          git commit -s -m "feat: publish Collective Meta-Model 0.1.0"
+          git push
