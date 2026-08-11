@@ -1,0 +1,97 @@
+register_version: 1.0
+model: urn:vercy:metamodel:collective
+
+# The outbound counterpart to sources.yaml. Data mastership is bidirectional:
+# sources.yaml declares where data flowing INTO this model is mastered; sinks.yaml
+# declares where data BORN in this model, or in an instance of it, is published
+# OUTWARD to data marts, directories, dashboards and dependent systems. Each sink
+# names what is published (scope, preferably a named projection so only a bounded
+# view leaves the model), the target, the trigger and cadence, and its status.
+#
+# Two grains appear here. Model-grain sinks publish artifacts of the model itself
+# (status active). Instance-grain sinks are templates an instance completes with
+# its own target coordinates (status template); they publish a projection, never
+# the raw object graph, so least-privilege and the projection contract are kept.
+
+sinks:
+  # --- Model-grain: this model's own outbound publication ---
+  - id: vercy-registry-node
+    grain: model
+    scope:
+      - collective.muif.json
+      - manifest.yaml
+    published_as: MMDG node vercy.collective
+    target:
+      type: repository
+      uri: https://github.com/ver-cy/registry
+      ref: main
+    trigger: release-tag
+    cadence: on-release
+    authority: ver-cy
+    status: active
+    note: >-
+      Registered in the Vercy unified registry as the Meta-Model Dependency Graph
+      node vercy.collective. PLMM references vercy.collective on the collective
+      kind and this model references vercy.oumm on org-unit, so a product resolves
+      to its building team through the graph.
+
+  # --- Instance-grain templates: an instance sets each target uri ---
+  - id: organization-chart-mart
+    grain: instance
+    scope:
+      - projection: collective:projection:organizationChart
+    target:
+      type: data-mart
+      uri: instance-declared
+    trigger: on-change
+    cadence: near-real-time
+    status: template
+    note: Structure and reporting lines only; omits authority, finance and unpublished members.
+
+  - id: team-roster-directory
+    grain: instance
+    scope:
+      - projection: collective:projection:teamRoster
+    target:
+      type: directory-service
+      uri: instance-declared
+    trigger: on-change
+    cadence: near-real-time
+    status: template
+    note: Current membership and positions for a directory or people-finder; references parties, never copies person master data.
+
+  - id: authority-register-governance
+    grain: instance
+    scope:
+      - projection: collective:projection:authorityRegister
+    target:
+      type: governance-system
+      uri: instance-declared
+    trigger: on-decision-domain-change
+    cadence: on-change
+    status: template
+    note: Decision domains and authority grants for a governance or approval system.
+
+  - id: capacity-plan-analytics
+    grain: instance
+    scope:
+      - projection: collective:projection:capacityPlan
+    target:
+      type: analytics-warehouse
+      uri: instance-declared
+    trigger: scheduled
+    cadence: daily
+    status: template
+    note: Capacity and allocation aggregates for planning analytics; omits individual assignment detail below the disclosure threshold.
+
+  - id: public-collective-directory
+    grain: instance
+    scope:
+      - projection: collective:projection:publicCollective
+    target:
+      type: public-directory
+      uri: instance-declared
+    trigger: on-publish
+    cadence: on-change
+    status: template
+    note: The public face of a collective; omits internal structure, authority and finance per the projection contract.

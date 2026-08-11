@@ -17,6 +17,15 @@ CMM provides stable semantics for:
 
 It deliberately does not define people, legal entities, products, projects, accounting ledgers, HR records, or identity-provider accounts. Those are sovereign external objects referenced through `Party`, `WorkSubject`, `Resource`, and `CostObject` integration boundaries.
 
+## Registry and composition
+
+This model is registered in the [Vercy unified registry](https://github.com/ver-cy/registry) as the Meta-Model Dependency Graph (MMDG) node `vercy.collective`. Through the registry it composes into the wider Vercy meta-model family by typed edges, not by copying:
+
+- The [Product Landscape Meta-Model (PLMM)](https://github.com/ver-cy/plmm) references `vercy.collective` on the `collective` kind, so a product resolves to the team that builds it through the graph.
+- This model references the [Org-Unit Meta-Model (OUMM)](https://github.com/ver-cy/org-unit) on the `org-unit` kind for the parent unit and member seats, rather than re-defining organizational structure.
+
+Data mastership is bidirectional: inbound masters are declared in [sources.yaml](sources.yaml); outbound publication to data marts, directories and dependent systems is declared in [sinks.yaml](sinks.yaml).
+
 ## Start here
 
 1. Read [BOOTSTRAP.md](BOOTSTRAP.md).

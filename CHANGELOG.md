@@ -2,6 +2,14 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## Unreleased
+
+Additive, non-breaking:
+
+- adds `sinks.yaml`, the outbound counterpart to `sources.yaml`, declaring where data born in the model or an instance is published outward to data marts, directories and dependent systems; instance-grain sinks publish a named projection, never the raw object graph;
+- documents registry and composition in the README: this model is registered as the MMDG node `vercy.collective`, referenced by PLMM and referencing OUMM;
+- records `sources.yaml` and `sinks.yaml` as mastership registers in the manifest kind rules.
+
 ## 0.2.0 - 2026-08-08
 
 Consistency and completeness release following independent Claude and Grok reviews:

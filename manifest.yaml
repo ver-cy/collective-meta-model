@@ -75,6 +75,13 @@ kind_rules:
     kind: artifact/validation
     origin: generated
 
+  - pattern: "sources.yaml"
+    kind: register/mastership-inbound
+    origin: authored
+  - pattern: "sinks.yaml"
+    kind: register/mastership-outbound
+    origin: authored
+
 exclude:
   - .git/**
   - .github/**
